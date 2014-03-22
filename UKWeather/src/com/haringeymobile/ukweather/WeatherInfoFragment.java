@@ -133,7 +133,7 @@ public class WeatherInfoFragment extends Fragment {
 			if (weatherInformation == null) {
 				if (parentActivity != null) {
 					Toast.makeText(parentActivity, R.string.error_message,
-							Toast.LENGTH_LONG).show();
+							Toast.LENGTH_SHORT).show();
 				}
 				return;
 			}
