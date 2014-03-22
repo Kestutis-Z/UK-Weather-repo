@@ -7,27 +7,36 @@ import com.haringeymobile.ukweather.R;
 
 public enum CityUK implements Parcelable {
 
-	LONDON("london", R.string.city_name_london),
+	LONDON(R.string.city_name_london),
 
-	BIRMINGHAM("birmingham", R.string.city_name_birmingham),
+	BIRMINGHAM(R.string.city_name_birmingham),
 
-	MANCHESTER("manchester", R.string.city_name_manchester),
+	LEEDS(R.string.city_name_leeds),
 
-	LUTON("luton", R.string.city_name_luton),
+	GLASGOW(R.string.city_name_glasgow),
+
+	SHEFFIELD(R.string.city_name_sheffield),
+
+	BRADFORD(R.string.city_name_bradford),
+
+	EDINBURGH(R.string.city_name_edinburgh),
+
+	LIVERPOOL(R.string.city_name_liverpool),
+
+	MANCHESTER(R.string.city_name_manchester),
+
+	BRISTOL(R.string.city_name_bristol),
 
 	;
 
-	private String openWeatherMapSearchName;
 	private int displayNameStringResource;
 
-	private CityUK(String openWeatherMapSearchName,
-			int displayNameStringResource) {
-		this.openWeatherMapSearchName = openWeatherMapSearchName;
+	private CityUK(int displayNameStringResource) {
 		this.displayNameStringResource = displayNameStringResource;
 	}
 
 	public String getOpenWeatherMapSearchName() {
-		return openWeatherMapSearchName;
+		return this.name();
 	}
 
 	public int getDisplayNameStringResource() {

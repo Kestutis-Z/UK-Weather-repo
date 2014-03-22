@@ -8,8 +8,14 @@
    
     <string name="city_name_london">London</string>
     <string name="city_name_birmingham">Birmingham</string>
+    <string name="city_name_leeds">London</string>
+    <string name="city_name_glasgow">Glasgow</string>
+    <string name="city_name_sheffield">Sheffield</string>
+    <string name="city_name_bradford">Bradford</string>
+    <string name="city_name_edinburgh">Edinburgh</string>
+    <string name="city_name_liverpool">Liverpool</string>
     <string name="city_name_manchester">Manchester</string>
-    <string name="city_name_luton">Luton</string>
+    <string name="city_name_bristol">Bristol</string>
    
     <string name="weather_info_city">City</string>
     <string name="weather_info_longitude">Longitude</string>
