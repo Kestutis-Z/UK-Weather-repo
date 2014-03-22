@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="grey1">#7F8E79</color>
+    <color name="grey1">#DBD1DA</color>
     <color name="grey2">#556270</color>
-    <color name="holo_light">#33b5e5</color>
-    <color name="holo_bright">#00ddff</color>
+    <color name="blue1">#9794DA</color>
+    <color name="blue2">#00ddff</color>
+    <color name="blue3">#321F6C</color>
+    <color name="green1">#57BE3A</color>
+    <color name="green2">#AAFF48</color>
+    <color name="darkblue1">#343838</color>
+    <color name="darkblue2">#005F6B</color>
+    <color name="darkblue3">#07082E</color>
+    <color name="darkblue4">#121324</color>
 </resources>

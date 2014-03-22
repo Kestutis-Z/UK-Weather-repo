@@ -4,7 +4,13 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     
+    <dimen name="gap_small">4dp</dimen>
     <dimen name="gap_medium">10dp</dimen>
+    <dimen name="gap_large">15dp</dimen>
+    
+    <dimen name="padding_small">3dp</dimen>
+    <dimen name="padding_medium">6dp</dimen>
+    <dimen name="padding_large">10dp</dimen>
     
     <dimen name="text_size_small">15dp</dimen>
     <dimen name="text_size_medium">25dp</dimen>
@@ -12,6 +18,10 @@
     
     <dimen name="list_divider_height">4dp</dimen>
     
-    <dimen name="background_shape_corners_radius">5dp</dimen>
+    <dimen name="icon_dimension">70dp</dimen>
+    
+    <dimen name="shape_stroke_width">5dp</dimen>
+    <dimen name="shape_corners_radius">4dp</dimen>
+    <dimen name="shape_padding">5dp</dimen>
 
 </resources>

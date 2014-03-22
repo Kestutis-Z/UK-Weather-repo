@@ -27,6 +27,8 @@ public class CityListFragment extends ListFragment {
 
 	private static final String SELECTED_LIST_POSITION = "position";
 	private static final int POSITION_NOT_YET_SELECTED = -1;
+	private static final int BACKGROUND_RESOURCE_EVEN = R.drawable.clickable_blue;
+	private static final int BACKGROUND_RESOURCE_ODD = R.drawable.clickable_green;
 
 	private Activity parentActivity;
 	private OnCitySelectedListener listener;
@@ -161,9 +163,9 @@ public class CityListFragment extends ListFragment {
 			holder.cityNameTextView.setText(cityName);
 
 			if (position % 2 == 1) {
-				rowView.setBackgroundResource(R.drawable.background_alternate_odd);
+				rowView.setBackgroundResource(BACKGROUND_RESOURCE_ODD);
 			} else {
-				rowView.setBackgroundResource(R.drawable.background_alternate_even);
+				rowView.setBackgroundResource(BACKGROUND_RESOURCE_EVEN);
 			}
 
 			return rowView;

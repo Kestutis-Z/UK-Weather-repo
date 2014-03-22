@@ -3,8 +3,8 @@
 
     <gradient
         android:angle="@integer/background_shape_gradient_angle"
-        android:endColor="@color/holo_light"
-        android:startColor="@color/holo_bright"
+        android:endColor="@color/blue1"
+        android:startColor="@color/blue2"
         android:type="linear" />
 
     <padding
@@ -13,6 +13,6 @@
         android:right="@dimen/gap_medium"
         android:top="@dimen/gap_medium" />
 
-    <corners android:radius="@dimen/background_shape_corners_radius" />
+    <corners android:radius="@dimen/shape_corners_radius" />
 
 </shape>

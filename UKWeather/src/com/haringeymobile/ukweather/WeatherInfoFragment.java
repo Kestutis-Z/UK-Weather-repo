@@ -3,19 +3,22 @@ package com.haringeymobile.ukweather;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.haringeymobile.ukweather.data.CityUK;
 import com.haringeymobile.ukweather.data.JSONConverter;
-import com.haringeymobile.ukweather.data.JSONRetrievingFromURLStrategy_1;
 import com.haringeymobile.ukweather.data.JSONRetriever;
+import com.haringeymobile.ukweather.data.JSONRetrievingFromURLStrategy_1;
 import com.haringeymobile.ukweather.data.LocationCoordinates;
 import com.haringeymobile.ukweather.data.Temperature;
 import com.haringeymobile.ukweather.data.WeatherConditions;
@@ -32,7 +35,9 @@ public class WeatherInfoFragment extends Fragment {
 	private TextView nameTextView;
 	private TextView locationTextView;
 	private TextView conditionsTextView;
+	private ImageView conditionsImageView;
 	private TextView temperatureTextView;
+	private TextView temperatureRangeTextView;
 	private TextView pressureTextView;
 	private TextView humidityTextView;
 
@@ -60,8 +65,12 @@ public class WeatherInfoFragment extends Fragment {
 				.findViewById(R.id.city_location_text_view);
 		conditionsTextView = (TextView) view
 				.findViewById(R.id.weather_conditions_text_view);
+		conditionsImageView = (ImageView) view
+				.findViewById(R.id.weather_conditions_image_view);
 		temperatureTextView = (TextView) view
 				.findViewById(R.id.temperature_text_view);
+		temperatureRangeTextView = (TextView) view
+				.findViewById(R.id.temperature_range_text_view);
 		pressureTextView = (TextView) view
 				.findViewById(R.id.atmospheric_pressure_text_view);
 		humidityTextView = (TextView) view
@@ -142,6 +151,13 @@ public class WeatherInfoFragment extends Fragment {
 			displayConditions(weatherInformation.getWeatherConditions());
 			displayWeatherNumericParametersText(weatherInformation
 					.getWeatherNumericParameters());
+			if (parentActivity != null) {
+				ScrollView weatherInfoScrollView = ((ScrollView) parentActivity
+						.findViewById(R.id.weather_info_scroll_view));
+				if (weatherInfoScrollView != null) {
+					weatherInfoScrollView.setVisibility(View.VISIBLE);
+				}
+			}
 		}
 
 		private void displayLocationText(LocationCoordinates coordinates) {
@@ -149,7 +165,7 @@ public class WeatherInfoFragment extends Fragment {
 					.getString(R.string.weather_info_longitude)
 					+ SEPARATOR
 					+ coordinates.getLongitude();
-			locationInfo += "\n";
+			locationInfo += ", ";
 			locationInfo += res.getString(R.string.weather_info_latitude)
 					+ SEPARATOR + coordinates.getLatitude();
 			locationTextView.setText(locationInfo);
@@ -162,8 +178,8 @@ public class WeatherInfoFragment extends Fragment {
 			 */
 			weatherConditions.getConditionName();
 			conditionsTextView.setText(conditionInfo);
-			conditionsTextView.setCompoundDrawablesWithIntrinsicBounds(
-					weatherConditions.getIcon(), null, null, null);
+			Drawable icon = weatherConditions.getIcon();
+			conditionsImageView.setImageDrawable(icon);
 		}
 
 		private void displayWeatherNumericParametersText(
@@ -175,16 +191,17 @@ public class WeatherInfoFragment extends Fragment {
 		}
 
 		private void displayTemperatureText(Temperature temperature) {
-			String temperatureInfo = res
-					.getString(R.string.weather_info_temperature)
-					+ SEPARATOR
-					+ MiscMethods.formatDoubleValue(temperature.getMain());
-			temperatureInfo += "\n";
-			temperatureInfo += res
-					.getString(R.string.weather_info_temperature_range)
-					+ SEPARATOR + getTemperatureRangeText(temperature);
+			String temperatureInfo = MiscMethods.formatDoubleValue(temperature
+					.getMain())
+					+ res.getString(R.string.weather_info_degree_celcius);
 			temperatureTextView.setText(temperatureInfo);
 
+			String temperatureRangeInfo = res
+					.getString(R.string.weather_info_temperature_range)
+					+ SEPARATOR
+					+ getTemperatureRangeText(temperature)
+					+ res.getString(R.string.weather_info_degree_celcius);
+			temperatureRangeTextView.setText(temperatureRangeInfo);
 		}
 
 		private String getTemperatureRangeText(Temperature temperature) {

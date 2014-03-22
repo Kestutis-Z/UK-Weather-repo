@@ -15,12 +15,16 @@
     <string name="weather_info_longitude">Longitude</string>
     <string name="weather_info_latitude">Latitude</string>
     <string name="weather_info_conditions"></string>
-    <string name="weather_info_temperature">Temperature</string>
+    <string name="weather_info_temperature"></string>
     <string name="weather_info_temperature_range">Temperature range</string>
+    <string name="weather_info_degree_celcius">\u2103</string>
+    <string name="weather_info_degree_fahrenheit">\u2109</string>
     <string name="weather_info_atmospheric_pressure">Atmospheric pressure</string>
     <string name="weather_info_humidity">Humidity</string>
     
     <string name="error_message">No connection, please try later!</string>
     <string name="loading_message">Loading&#8230;</string>
+    
+    <string name="weather_consitions_icon_content_description">Weather icon</string>
 
 </resources>

@@ -23,14 +23,36 @@
         <item name="android:choiceMode">singleChoice</item>
     </style>
     
-    <style name="CityNameInList">
+    <style name="LargeText">
         <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/padding_large</item>
         <item name="android:textSize">@dimen/text_size_large</item>
     </style>
     
-    <style name="WeatherInfoText">
+    <style name="LargeText.Background1">
+        <item name="android:background">@drawable/background_alternate_odd</item>
+    </style>
+
+    <style name="LargeText.Background2">
+        <item name="android:background">@drawable/background_alternate_even</item>
+    </style>
+    
+    <style name="MediumText">
         <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:padding">@dimen/padding_medium</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="MediumText.Background1">
+        <item name="android:background">@drawable/background_alternate_odd</item>
+    </style>
+
+    <style name="MediumText.Background2">
+        <item name="android:background">@drawable/background_alternate_even</item>
+    </style>
+    
+    <style name="MainActivity">
+        <item name="android:background">@color/grey2</item>
     </style>
 
 </resources>
