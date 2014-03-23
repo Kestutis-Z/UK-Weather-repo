@@ -8,7 +8,7 @@
    
     <string name="city_name_london">London</string>
     <string name="city_name_birmingham">Birmingham</string>
-    <string name="city_name_leeds">London</string>
+    <string name="city_name_leeds">Leeds</string>
     <string name="city_name_glasgow">Glasgow</string>
     <string name="city_name_sheffield">Sheffield</string>
     <string name="city_name_bradford">Bradford</string>
@@ -28,9 +28,18 @@
     <string name="weather_info_atmospheric_pressure">Atmospheric pressure</string>
     <string name="weather_info_humidity">Humidity</string>
     
+    <string name="weather_consitions_icon_content_description">Weather icon</string>
+    
     <string name="error_message">No connection, please try later!</string>
     <string name="loading_message">Loading&#8230;</string>
     
-    <string name="weather_consitions_icon_content_description">Weather icon</string>
-
+    <string name="city_search_hint">Search cities</string>
+    
+    <string name="mi_search_title">Search</string>
+    <string name="mi_submenu_title">Extras</string>
+    <string name="mi_settings_title">Settings</string>
+    <string name="mi_rate_application_title">Rate application!</string>
+    <string name="mi_more_apps_title">More apps!</string>  
+    <string name="mi_about_program_title">About</string>
+    
 </resources>

@@ -1,12 +1,41 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.haringeymobile.ukweather.MainActivity" >
+    xmlns:weather="http://schemas.android.com/apk/res-auto" >
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
+        android:id="@+id/mi_search"
+        android:icon="@drawable/as_search"
+        android:title="@string/mi_search_title"
+        weather:actionViewClass="android.support.v7.widget.SearchView"
+        weather:showAsAction="always"/>
+    <item
+        android:id="@+id/mi_main_submenu"
+        android:icon="@drawable/aas_overflow"
+        android:title="@string/mi_submenu_title"
+        weather:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/mi_settings"
+                android:icon="@drawable/aas_settings"
+                android:title="@string/mi_settings_title"
+                weather:showAsAction="never"/>
+            <!--
+            <item
+                android:id="@+id/mi_rate_application"
+                android:icon="@drawable/aas_rating"
+                weather:showAsAction="never"
+                android:title="@string/mi_rate_application"/>
+            <item
+                android:id="@+id/mi_more_apps"
+                android:icon="@drawable/aas_learn"
+                weather:showAsAction="never"
+                android:title="@string/mi_more_apps_text"/>
+            <item
+                android:id="@+id/mi_credits"
+                android:icon="@drawable/aas_labels"
+                weather:showAsAction="never"
+                android:title="@string/mi_about_program_text"/>
+            -->
+        </menu>
+    </item>
 
 </menu>
