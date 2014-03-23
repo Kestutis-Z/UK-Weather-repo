@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/city_name_text_view"
-            style="@style/LargeText.Background2"
+            style="@style/TextView.LargeText.Background2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/gap_small" />
@@ -32,7 +32,7 @@
 
             <TextView
                 android:id="@+id/temperature_text_view"
-                style="@style/LargeText.Background2"
+                style="@style/TextView.LargeText.Background2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -46,35 +46,35 @@
 
             <TextView
                 android:id="@+id/weather_conditions_text_view"
-                style="@style/LargeText"
+                style="@style/TextView.LargeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/temperature_range_text_view"
-            style="@style/MediumText.Background2"
+            style="@style/TextView.MediumText.Background2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/gap_small" />
 
         <TextView
             android:id="@+id/atmospheric_pressure_text_view"
-            style="@style/MediumText.Background1"
+            style="@style/TextView.MediumText.Background1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/gap_small" />
 
         <TextView
             android:id="@+id/humidity_text_view"
-            style="@style/MediumText.Background2"
+            style="@style/TextView.MediumText.Background2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/gap_small" />
 
         <TextView
             android:id="@+id/city_location_text_view"
-            style="@style/MediumText.Background1"
+            style="@style/TextView.MediumText.Background1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/gap_small" />

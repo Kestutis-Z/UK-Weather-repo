@@ -4,7 +4,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
+    <style name="AppBaseTheme" parent="Theme.AppCompat">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -23,31 +23,34 @@
         <item name="android:choiceMode">singleChoice</item>
     </style>
     
-    <style name="LargeText">
+    <style name="TextView">
         <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/darkblue4</item>
+    </style>
+    
+    <style name="TextView.LargeText">
         <item name="android:padding">@dimen/padding_large</item>
         <item name="android:textSize">@dimen/text_size_large</item>
     </style>
     
-    <style name="LargeText.Background1">
+    <style name="TextView.LargeText.Background1">
         <item name="android:background">@drawable/background_alternate_odd</item>
     </style>
 
-    <style name="LargeText.Background2">
+    <style name="TextView.LargeText.Background2">
         <item name="android:background">@drawable/background_alternate_even</item>
     </style>
     
-    <style name="MediumText">
+    <style name="TextView.MediumText">
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:padding">@dimen/padding_medium</item>
-        <item name="android:gravity">center</item>
     </style>
 
-    <style name="MediumText.Background1">
+    <style name="TextView.MediumText.Background1">
         <item name="android:background">@drawable/background_alternate_odd</item>
     </style>
 
-    <style name="MediumText.Background2">
+    <style name="TextView.MediumText.Background2">
         <item name="android:background">@drawable/background_alternate_even</item>
     </style>
     
