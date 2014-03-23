@@ -5,95 +5,68 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
+import java.net.MalformedURLException;
 import java.net.URL;
+
+import com.haringeymobile.ukweather.utils.MiscMethods;
 
 public class JSONRetrievingFromURLStrategy_1 implements
 		JSONRetrievingFromURLStrategy {
 
 	public String retrieveJSONString(URL url) {
-		HttpURLConnection connection = getConnection(url);
-		InputStream inputStream = getInputStream(connection);
-		if (inputStream == null) {
+		StringBuilder stringBuilder = null;
+		try {
+			HttpURLConnection connection = getConnection(url);
+			int responseCode = connection.getResponseCode();
+			InputStream inputStream = null;
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				inputStream = connection.getInputStream();
+			}
+			if (inputStream == null) {
+				return null;
+			}
+			stringBuilder = readData(inputStream);
+			inputStream.close();
+			connection.disconnect();
+		} catch (MalformedURLException e) {
+			MiscMethods.log("MalformedURLException");
+			return null;
+		} catch (IOException e) {
+			MiscMethods.log("IOException");
 			return null;
 		}
-		BufferedReader bufferedReader = new BufferedReader(
-				new InputStreamReader(inputStream));
-		StringBuilder stringBuilder = readData(bufferedReader);
-		closeInputStream(inputStream);
-		connection.disconnect();
 		return stringBuilder.toString();
 	}
 
-	private HttpURLConnection getConnection(URL url) {
+	private HttpURLConnection getConnection(URL url) throws IOException {
 		HttpURLConnection connection = null;
-		try {
-			connection = (HttpURLConnection) url.openConnection();
-		} catch (IOException e) {
-			dealWithException(e);
-		}
-		try {
-			connection.setRequestMethod(GET);
-		} catch (ProtocolException e) {
-			dealWithException(e);
-		}
+		connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(GET);
 		connection.setDoInput(true);
-		// See http://developer.android.com/reference/java/net/URLConnection.html#setConnectTimeout(int)
+		// See
+		// http://developer.android.com/reference/java/net/URLConnection.html#setConnectTimeout(int)
 		connection.setConnectTimeout(TIMEOUT);
 		connection.setReadTimeout(TIMEOUT);
-		try {
-			connection.connect();
-		} catch (IOException e) {
-			dealWithException(e);
-		}
+		connection.connect();
 		return connection;
 	}
 
-	private void dealWithException(IOException e) {
-		// TODO Auto-generated method stub
-		e.printStackTrace();
+	private StringBuilder readData(InputStream inputStream) throws IOException {
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(inputStream));
+		StringBuilder stringBuilder = buildString(bufferedReader);
+		inputStream.close();
+		return stringBuilder;
 	}
 
-	private InputStream getInputStream(HttpURLConnection connection) {
-		InputStream inputStream = null;
-		try {
-			inputStream = connection.getInputStream();
-		} catch (IOException e) {
-			dealWithException(e);
-		}
-		return inputStream;
-	}
-
-	private StringBuilder buildString(BufferedReader bufferedReader) {
+	private StringBuilder buildString(BufferedReader bufferedReader)
+			throws IOException {
 		StringBuilder stringBuilder = new StringBuilder();
 		String line;
-		try {
-			while ((line = bufferedReader.readLine()) != null) {
-				stringBuilder.append(line + "\n");
-			}
-		} catch (IOException e) {
-			dealWithException(e);
+		while ((line = bufferedReader.readLine()) != null) {
+			stringBuilder.append(line + "\n");
 		}
 		return stringBuilder;
-	}
-
-	private StringBuilder readData(BufferedReader bufferedReader) {
-		StringBuilder stringBuilder = null;
-		stringBuilder = buildString(bufferedReader);
-		try {
-			bufferedReader.close();
-		} catch (IOException e) {
-			dealWithException(e);
-		}
-		return stringBuilder;
-	}
-
-	private void closeInputStream(InputStream inputStream) {
-		try {
-			inputStream.close();
-		} catch (IOException e) {
-			dealWithException(e);
-		}
 	}
 
 }
