@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,13 +15,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.haringeymobile.ukweather.data.CityUK;
 import com.haringeymobile.ukweather.utils.MiscMethods;
 
 public class MainActivity extends ActionBarActivity implements
 		CityListFragment.OnCitySelectedListener {
 
-	static final String CITY = "city";
+	static final String CITY_ID = "city";
 	static final String CITY_LIST = "city list";
 	private static final String LIST_FRAGMENT_TAG = "list fragment";
 	private static final String WEATHER_INFO_FRAGMENT_TAG = "weather fragment";
@@ -47,12 +45,14 @@ public class MainActivity extends ActionBarActivity implements
 		}
 
 		isDualPane = (FrameLayout) findViewById(R.id.weather_info_container) != null;
-		if (isDualPane) {
+		if (isDualPane && savedInstanceState != null) {
 			WeatherInfoFragment weatherInfoFragment = (WeatherInfoFragment) fragmentManager
 					.findFragmentByTag(WEATHER_INFO_FRAGMENT_TAG);
-			weatherInfoFragment = WeatherInfoFragment.newInstance(null);
-			fragmentTransaction.replace(R.id.weather_info_container,
-					weatherInfoFragment, WEATHER_INFO_FRAGMENT_TAG);
+			if (weatherInfoFragment == null) {
+				weatherInfoFragment = new WeatherInfoFragment();
+				fragmentTransaction.replace(R.id.weather_info_container,
+						weatherInfoFragment, WEATHER_INFO_FRAGMENT_TAG);
+			}
 		}
 		fragmentTransaction.commit();
 	}
@@ -60,16 +60,19 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
-		
+
 		MenuItem searchItem = menu.findItem(R.id.mi_search);
-	    searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-		
+		searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
 		// Get the SearchView and set the searchable configuration
-	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-	   // SearchView searchView = (SearchView) menu.findItem(R.id.mi_search).getActionView();
-	    // Assumes current activity is the searchable activity
-	    searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		// SearchView searchView = (SearchView)
+		// menu.findItem(R.id.mi_search).getActionView();
+		// Assumes current activity is the searchable activity
+		searchView.setSearchableInfo(searchManager
+				.getSearchableInfo(getComponentName()));
+		searchView.setIconifiedByDefault(false); // Do not iconify the widget;
+													// expand it by default
 		return true;
 	}
 
@@ -86,18 +89,18 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public void onCitySelected(CityUK city) {
+	public void onCitySelected(int cityId) {
 		MiscMethods.log("In onCitySelected" + " city");
 		if (isDualPane) {
-			updateWeatherInformation(city);
+			updateWeatherInformation(cityId);
 		} else {
 			Intent intent = new Intent(this, WeatherInfoActivity.class);
-			intent.putExtra(CITY, (Parcelable) city);
+			intent.putExtra(CITY_ID, cityId);
 			startActivity(intent);
 		}
 	}
 
-	public void updateWeatherInformation(CityUK city) {
+	public void updateWeatherInformation(int cityId) {
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		WeatherInfoFragment weatherInfoFragment = (WeatherInfoFragment) fragmentManager
 				.findFragmentByTag(WEATHER_INFO_FRAGMENT_TAG);
@@ -105,8 +108,7 @@ public class MainActivity extends ActionBarActivity implements
 			FragmentTransaction fragmentTransaction = fragmentManager
 					.beginTransaction();
 			fragmentTransaction.replace(R.id.weather_info_container,
-					WeatherInfoFragment.newInstance(city),
-					WEATHER_INFO_FRAGMENT_TAG);
+					new WeatherInfoFragment(), WEATHER_INFO_FRAGMENT_TAG);
 			fragmentTransaction.commit();
 		}
 

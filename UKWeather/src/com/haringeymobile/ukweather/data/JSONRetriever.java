@@ -5,8 +5,7 @@ import java.net.URL;
 
 public class JSONRetriever {
 
-	public static String OPEN_WEATHER_MAP_URL_PREFIX = "http://api.openweathermap.org/data/2.5/weather?q=";
-	public static String SUFFIX_UK = ",uk";
+	public static String OPEN_WEATHER_MAP_URL_PREFIX = "http://api.openweathermap.org/data/2.5/weather?id=";
 
 	private JSONRetrievingFromURLStrategy strategy;
 
@@ -15,16 +14,15 @@ public class JSONRetriever {
 		this.strategy = strategy;
 	}
 
-	public String getJSONString(String openWeatherMapSearchName) {
-		URL url = generateURL(openWeatherMapSearchName);
+	public String getJSONString(int cityId) {
+		URL url = generateURL(cityId);
 		return strategy.retrieveJSONString(url);
 	}
 
-	private URL generateURL(String openWeatherMapSearchName) {
+	private URL generateURL(int cityId) {
 		URL url = null;
 		try {
-			url = new URL(OPEN_WEATHER_MAP_URL_PREFIX
-					+ openWeatherMapSearchName + SUFFIX_UK);
+			url = new URL(OPEN_WEATHER_MAP_URL_PREFIX + cityId);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}

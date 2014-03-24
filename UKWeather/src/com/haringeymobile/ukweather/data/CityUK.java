@@ -3,44 +3,44 @@ package com.haringeymobile.ukweather.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.haringeymobile.ukweather.R;
-
 public enum CityUK implements Parcelable {
 
-	LONDON(R.string.city_name_london),
+	LONDON(2643743, "London"),
 
-	BIRMINGHAM(R.string.city_name_birmingham),
+	BIRMINGHAM(2655603, "Birmingham"),
 
-	LEEDS(R.string.city_name_leeds),
+	LEEDS(2644688, "Leeds"),
 
-	GLASGOW(R.string.city_name_glasgow),
+	GLASGOW(2648579, "Glasgow"),
 
-	SHEFFIELD(R.string.city_name_sheffield),
+	SHEFFIELD(2638077, "Sheffield"),
 
-	BRADFORD(R.string.city_name_bradford),
+	BRADFORD(2654993, "Bradford"),
 
-	EDINBURGH(R.string.city_name_edinburgh),
+	EDINBURGH(2650225, "Edinburgh"),
 
-	LIVERPOOL(R.string.city_name_liverpool),
+	LIVERPOOL(2644210, "Liverpool"),
 
-	MANCHESTER(R.string.city_name_manchester),
+	MANCHESTER(2643123, "Manchester"),
 
-	BRISTOL(R.string.city_name_bristol),
+	BRISTOL(2654675, "Bristol"),
 
 	;
 
-	private int displayNameStringResource;
+	private int openWeatherMapId;
+	private String displayName;
 
-	private CityUK(int displayNameStringResource) {
-		this.displayNameStringResource = displayNameStringResource;
+	private CityUK(int openWeatherMapId, String displayName) {
+		this.openWeatherMapId = openWeatherMapId;
+		this.displayName = displayName;
 	}
 
-	public String getOpenWeatherMapSearchName() {
-		return this.name();
+	public int getOpenWeatherMapId() {
+		return openWeatherMapId;
 	}
 
-	public int getDisplayNameStringResource() {
-		return displayNameStringResource;
+	public String getDisplayName() {
+		return displayName;
 	}
 
 	public static final Parcelable.Creator<CityUK> CREATOR = new Parcelable.Creator<CityUK>() {

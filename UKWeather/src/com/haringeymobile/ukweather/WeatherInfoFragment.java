@@ -24,7 +24,9 @@ import com.haringeymobile.ukweather.data.Temperature;
 import com.haringeymobile.ukweather.data.WeatherConditions;
 import com.haringeymobile.ukweather.data.WeatherInformation;
 import com.haringeymobile.ukweather.data.WeatherNumericParameters;
+import com.haringeymobile.ukweather.datastorage.CityTable;
 import com.haringeymobile.ukweather.utils.MiscMethods;
+import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 
 public class WeatherInfoFragment extends Fragment {
 
@@ -40,14 +42,6 @@ public class WeatherInfoFragment extends Fragment {
 	private TextView temperatureRangeTextView;
 	private TextView pressureTextView;
 	private TextView humidityTextView;
-
-	static final WeatherInfoFragment newInstance(CityUK city) {
-		WeatherInfoFragment solutionFragment = new WeatherInfoFragment();
-		Bundle args = new Bundle();
-		args.putParcelable(MainActivity.CITY, city);
-		solutionFragment.setArguments(args);
-		return solutionFragment;
-	}
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -81,17 +75,16 @@ public class WeatherInfoFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		Bundle args = getArguments();
-		if (args != null) {
-			CityUK city = getArguments().getParcelable(MainActivity.CITY);
-			if (city != null) {
-				updateWeatherInfo(city);
-			}
+		int cityId = SharedPrefsHelper.getIntFromSharedPrefs(parentActivity,
+				CityListFragment.LAST_SELECTED_CITY_ID,
+				CityUK.LONDON.getOpenWeatherMapId());
+		if (cityId != CityTable.CITY_ID_DOES_NOT_EXIST) {
+			updateWeatherInfo(cityId);
 		}
 	}
 
-	public void updateWeatherInfo(CityUK city) {
-		new WeatherInformationRetrieverTask().execute(city);
+	public void updateWeatherInfo(int cityId) {
+		new WeatherInformationRetrieverTask().execute(cityId);
 	}
 
 	@Override
@@ -101,7 +94,7 @@ public class WeatherInfoFragment extends Fragment {
 	}
 
 	private class WeatherInformationRetrieverTask extends
-			AsyncTask<CityUK, Integer, WeatherInformation> {
+			AsyncTask<Integer, Integer, WeatherInformation> {
 
 		ProgressDialog progressDialog;
 		Resources res = parentActivity.getResources();
@@ -119,13 +112,12 @@ public class WeatherInfoFragment extends Fragment {
 		}
 
 		@Override
-		protected WeatherInformation doInBackground(CityUK... params) {
-			CityUK city = params[0];
+		protected WeatherInformation doInBackground(Integer... params) {
+			int cityId = params[0];
 			JSONRetriever jsonRetriever = new JSONRetriever();
 			jsonRetriever
 					.setHttpCallsHandlingStrategy(new JSONRetrievingFromURLStrategy_1());
-			String jsonString = jsonRetriever.getJSONString(city
-					.getOpenWeatherMapSearchName());
+			String jsonString = jsonRetriever.getJSONString(cityId);
 			if (jsonString == null) {
 				return null;
 			} else {

@@ -3,7 +3,7 @@ package com.haringeymobile.ukweather;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
-import com.haringeymobile.ukweather.data.CityUK;
+import com.haringeymobile.ukweather.datastorage.CityTable;
 
 public class WeatherInfoActivity extends ActionBarActivity {
 
@@ -21,10 +21,11 @@ public class WeatherInfoActivity extends ActionBarActivity {
 		}
 
 		setContentView(R.layout.activity_weather_info);
-		CityUK city = getIntent().getParcelableExtra(MainActivity.CITY);
+		int cityId = getIntent().getIntExtra(MainActivity.CITY_ID,
+				CityTable.CITY_ID_DOES_NOT_EXIST);
 		WeatherInfoFragment weatherInfoFragment = (WeatherInfoFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.weather_info_container);
-		weatherInfoFragment.updateWeatherInfo(city);
+		weatherInfoFragment.updateWeatherInfo(cityId);
 	}
 
 }

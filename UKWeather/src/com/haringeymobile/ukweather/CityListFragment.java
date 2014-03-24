@@ -1,40 +1,43 @@
 package com.haringeymobile.ukweather;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
 import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.haringeymobile.ukweather.data.CityUK;
+import com.haringeymobile.ukweather.datastorage.CityTable;
+import com.haringeymobile.ukweather.datastorage.WeatherContentProvider;
+import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 
-public class CityListFragment extends ListFragment {
+public class CityListFragment extends ListFragment implements
+		LoaderCallbacks<Cursor> {
 
 	public interface OnCitySelectedListener {
 
-		public void onCitySelected(CityUK city);
+		public void onCitySelected(int cityId);
 
 	}
 
-	private static final String SELECTED_LIST_POSITION = "position";
-	private static final int POSITION_NOT_YET_SELECTED = -1;
+	static final String LAST_SELECTED_CITY_ID = "city id";
 	private static final int BACKGROUND_RESOURCE_EVEN = R.drawable.clickable_blue;
 	private static final int BACKGROUND_RESOURCE_ODD = R.drawable.clickable_green;
+	private static final int LOADER_ALL_CITY_RECORDS = 0;
 
 	private Activity parentActivity;
 	private OnCitySelectedListener listener;
-	private CityNameArrayAdapter arrayAdapter;
-	private List<CityUK> ukCities;
-	private int lastSelectedPosition = POSITION_NOT_YET_SELECTED;
+	private CityCursorAdapter cursorAdapter;
+	private int lastCityId;
 	private boolean isDualPane;
 
 	@Override
@@ -52,13 +55,8 @@ public class CityListFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ukCities = getUKCities();
-	}
-
-	private List<CityUK> getUKCities() {
-		List<CityUK> cities = new ArrayList<>();
-		cities.addAll(EnumSet.allOf(CityUK.class));
-		return cities;
+		lastCityId = SharedPrefsHelper.getIntFromSharedPrefs(parentActivity,
+				LAST_SELECTED_CITY_ID, CityUK.LONDON.getOpenWeatherMapId());
 	}
 
 	@Override
@@ -72,43 +70,33 @@ public class CityListFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		if (arrayAdapter == null) {
-			arrayAdapter = new CityNameArrayAdapter(parentActivity,
-					R.layout.row_city_list, ukCities);
-		}
-		setListAdapter(arrayAdapter);
-
-		if (savedInstanceState != null) {
-			lastSelectedPosition = savedInstanceState
-					.getInt(SELECTED_LIST_POSITION);
-		}
+		displayCityList();
 		isDualPane = (FrameLayout) parentActivity
 				.findViewById(R.id.weather_info_container) != null;
-		if (isDualPane && lastSelectedPosition != POSITION_NOT_YET_SELECTED) {
-			getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-			displayWeatherInformation(lastSelectedPosition);
-		}
-	}
-
-	public void displayWeatherInformation(int position) {
-		lastSelectedPosition = position;
 		if (isDualPane) {
-			getListView().setItemChecked(position, true);
+			getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+			listener.onCitySelected(lastCityId);
 		}
-		listener.onCitySelected((CityUK) getListView().getItemAtPosition(
-				position));
+	}
+
+	private void displayCityList() {
+		int rowLayoutID = R.layout.row_city_list;
+		int[] to = new int[] { R.id.city_name_in_list_row_text_view };
+		String[] columnsToDisplay = new String[] { CityTable.COLUMN_NAME };
+
+		cursorAdapter = new CityCursorAdapter(parentActivity, rowLayoutID,
+				null, columnsToDisplay, to, 0);
+
+		setListAdapter(cursorAdapter);
+
+		getLoaderManager().initLoader(LOADER_ALL_CITY_RECORDS, null, this);
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt(SELECTED_LIST_POSITION, lastSelectedPosition);
-	}
-
-	@Override
-	public void onDestroyView() {
-		setListAdapter(null);
-		super.onDestroyView();
+	public void onResume() {
+		super.onResume();
+		// Starts a new or restarts an existing Loader in this manager
+		getLoaderManager().restartLoader(0, null, this);
 	}
 
 	@Override
@@ -121,54 +109,65 @@ public class CityListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView listView, View v, int position, long id) {
 		super.onListItemClick(listView, v, position, id);
-		displayWeatherInformation(position);
+		lastCityId = cursorAdapter.getCityId(position);
+		SharedPrefsHelper.putIntIntoSharedPrefs(parentActivity,
+				LAST_SELECTED_CITY_ID, lastCityId);
+		listener.onCitySelected(lastCityId);
 		// TODO v.setBackgroundResource(R.drawable.background_highlighted_view);
 	}
 
-	private static class WeatherInformationViewHolder {
-		TextView cityNameTextView;
+	int getLastCityId() {
+		return lastCityId;
 	}
 
-	private class CityNameArrayAdapter extends ArrayAdapter<CityUK> {
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		String[] projection = null;
+		String selection = null;
+		String[] selectionArgs = null;
+		String sortOrder = CityTable.COLUMN_LAST_QUERY_DATE + " DESC";
 
-		private Activity context;
-		private int layoutResourceId;
-		private final List<CityUK> cities;
+		CursorLoader cursorLoader = new CursorLoader(parentActivity,
+				WeatherContentProvider.CONTENT_URI_CITY_RECORDS, projection,
+				selection, selectionArgs, sortOrder);
+		return cursorLoader;
+	}
 
-		private CityNameArrayAdapter(Activity activity, int layoutResourceId,
-				List<CityUK> cities) {
-			super(activity, layoutResourceId, cities);
-			this.context = activity;
-			this.layoutResourceId = layoutResourceId;
-			this.cities = cities;
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+		cursorAdapter.swapCursor(data);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		cursorAdapter.swapCursor(null);
+	}
+
+	private class CityCursorAdapter extends SimpleCursorAdapter {
+
+		private CityCursorAdapter(Context context, int layout, Cursor c,
+				String[] from, int[] to, int flags) {
+			super(context, layout, c, from, to, flags);
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			WeatherInformationViewHolder holder;
-			View rowView = convertView;
-			if (rowView == null) {
-				LayoutInflater inflater = context.getLayoutInflater();
-				rowView = inflater.inflate(layoutResourceId, parent, false);
-				holder = new WeatherInformationViewHolder();
-				holder.cityNameTextView = (TextView) rowView
-						.findViewById(R.id.city_name_in_list_row_text_view);
-				rowView.setTag(holder);
-			}
-			holder = (WeatherInformationViewHolder) rowView.getTag();
-
-			CityUK city = cities.get(position);
-			String cityName = context.getResources().getString(
-					city.getDisplayNameStringResource());
-			holder.cityNameTextView.setText(cityName);
-
+			View view = super.getView(position, convertView, parent);
 			if (position % 2 == 1) {
-				rowView.setBackgroundResource(BACKGROUND_RESOURCE_ODD);
+				view.setBackgroundResource(BACKGROUND_RESOURCE_ODD);
 			} else {
-				rowView.setBackgroundResource(BACKGROUND_RESOURCE_EVEN);
+				view.setBackgroundResource(BACKGROUND_RESOURCE_EVEN);
 			}
+			return view;
+		}
 
-			return rowView;
+		int getCityId(int position) {
+			Cursor cursor = getCursor();
+			if (cursor.moveToPosition(position)) {
+				return cursor.getInt(cursor
+						.getColumnIndex(CityTable.COLUMN_CITY_ID));
+			}
+			return CityTable.CITY_ID_DOES_NOT_EXIST;
 		}
 
 	}
