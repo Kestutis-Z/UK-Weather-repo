@@ -1,8 +1,13 @@
-package com.haringeymobile.ukweather.data;
+package com.haringeymobile.ukweather.data.json;
 
-public class LocationCoordinates {
+import com.google.gson.annotations.SerializedName;
 
+public class Coordinates {
+
+	@SerializedName("lat")
 	private double latitude;
+
+	@SerializedName("lon")
 	private double longitude;
 
 	public double getLatitude() {
@@ -19,14 +24,6 @@ public class LocationCoordinates {
 
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("LocationCoordinates [latitude=").append(latitude)
-				.append(", longitude=").append(longitude).append("]");
-		return builder.toString();
 	}
 
 }

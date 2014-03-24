@@ -1,4 +1,4 @@
-package com.haringeymobile.ukweather.data;
+package com.haringeymobile.ukweather.data.json;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,33 +11,59 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-public class WeatherConditions {
+import com.google.gson.annotations.SerializedName;
+
+public class Weather {
 
 	private static final String ICON_URL_PREFIX = "http://openweathermap.org/img/w/";
 
-	private String conditionName;
-	private Drawable icon;
+	private String description;
 
-	public String getConditionName() {
-		return conditionName;
+	private String icon;
+
+	private int id;
+
+	private Drawable iconDrawable;
+
+	@SerializedName("main")
+	private String type;
+
+	public String getDescription() {
+		return description;
 	}
 
-	public void setConditionName(String conditionName) {
-		this.conditionName = conditionName;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public Drawable getIcon() {
+	public String getIcon() {
 		return icon;
 	}
 
-	public void setIcon(String iconString, Resources res) {
-		String iconUrl = ICON_URL_PREFIX + iconString;
-		this.icon = getDrawableFromURL(iconUrl, res);
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
-	public Drawable getDrawableFromURL(String url1, Resources res) {
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Drawable getIconDrawable(Resources res) {
+		String iconUrl = ICON_URL_PREFIX + icon;
 		try {
-			URL url = new URL(url1);
+			URL url = new URL(iconUrl);
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
 			connection.setDoInput(true);
