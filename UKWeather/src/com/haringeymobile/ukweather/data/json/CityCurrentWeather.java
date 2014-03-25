@@ -28,6 +28,7 @@ public class CityCurrentWeather {
 	@SerializedName("sys")
 	private SystemParameters systemParameters;
 
+	@SerializedName("weather")
 	private List<Weather> weather;
 
 	private Wind wind;
