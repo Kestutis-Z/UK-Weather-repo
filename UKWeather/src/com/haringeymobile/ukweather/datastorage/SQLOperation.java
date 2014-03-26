@@ -1,5 +1,7 @@
 package com.haringeymobile.ukweather.datastorage;
 
+import com.haringeymobile.ukweather.utils.MiscMethods;
+
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -31,20 +33,50 @@ public class SQLOperation {
 				WeatherContentProvider.CONTENT_URI_CITY_RECORDS, newValues);
 	}
 
-	public void updateCurrentWeather(int cityId, String jsonString) {
-		Cursor cursor = getCursorWithCurrentWeather(cityId);
+	/**
+	 * Updates city record if it already exists in the database, otherwise
+	 * inserts new record.
+	 * 
+	 * @param cityId
+	 *            Open Weather Map city ID
+	 * @param cityName
+	 *            Open Weather Map city name
+	 * @param date
+	 *            Time when the record inserted or last updated
+	 * @param currentWeather
+	 *            Json string for the current city weather
+	 * @param weatherForecast
+	 *            Json string for the weather forecast
+	 */
+	public void insertOrUpdateCity(int cityId, String cityName, long date,
+			String currentWeather, String weatherForecast) {
+		Cursor cursor = getCursorWithCityId(cityId);
 		if (cursor == null) {
 			return;
 		}
-		if (!cursor.moveToFirst()) {
+		boolean cityIdExists = cursor.moveToFirst();
+		if (cityIdExists) {
+			Uri rowUri = getRowUri(cursor);
+			ContentValues newValues = getContentValuesWithCurrentDateAndWeather(currentWeather);
+			context.getContentResolver().update(rowUri, newValues, null, null);
 			cursor.close();
-			return;
+		} else {
+			insertNewCity(cityId, cityName, date, currentWeather,
+					weatherForecast);
 		}
+	}
 
-		Uri rowUri = getRowUri(cursor);
-		ContentValues newValues = getContentValuesWithCurrentDateAndWeather(jsonString);
-		context.getContentResolver().update(rowUri, newValues, null, null);
-		cursor.close();
+	private Cursor getCursorWithCityId(int cityId) {
+		if (context == null) {
+			return null;
+		}
+		Cursor cursor = context.getContentResolver().query(
+				WeatherContentProvider.CONTENT_URI_CITY_RECORDS,
+				new String[] { CityTable._ID, CityTable.COLUMN_CITY_ID, },
+				CityTable.COLUMN_CITY_ID + "=?",
+				new String[] { Integer.toString(cityId) }, null);
+		MiscMethods.log("In getCursorWithCityId; row count: ::::::::::;; " + cursor.getCount());
+		return cursor;
 	}
 
 	private Uri getRowUri(Cursor cursor) {
@@ -62,6 +94,22 @@ public class SQLOperation {
 				System.currentTimeMillis());
 		newValues.put(CityTable.COLUMN_CACHED_JSON_CURRENT, jsonString);
 		return newValues;
+	}
+
+	public void updateCurrentWeather(int cityId, String jsonString) {
+		Cursor cursor = getCursorWithCurrentWeather(cityId);
+		if (cursor == null) {
+			return;
+		}
+		if (!cursor.moveToFirst()) {
+			cursor.close();
+			return;
+		}
+
+		Uri rowUri = getRowUri(cursor);
+		ContentValues newValues = getContentValuesWithCurrentDateAndWeather(jsonString);
+		context.getContentResolver().update(rowUri, newValues, null, null);
+		cursor.close();
 	}
 
 	private Cursor getCursorWithCurrentWeather(int cityId) {

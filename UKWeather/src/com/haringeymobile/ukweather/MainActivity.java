@@ -28,6 +28,8 @@ import com.haringeymobile.ukweather.data.JSONRetrievingFromURLStrategy_1;
 import com.haringeymobile.ukweather.data.OpenWeatherMapURLBuilder;
 import com.haringeymobile.ukweather.data.json.CityCurrentWeather;
 import com.haringeymobile.ukweather.data.json.SearchResponseForFindQuery;
+import com.haringeymobile.ukweather.datastorage.SQLOperation;
+import com.haringeymobile.ukweather.utils.MiscMethods;
 
 public class MainActivity extends ActionBarActivity implements
 		CityListFragment.OnCitySelectedListener,
@@ -146,12 +148,29 @@ public class MainActivity extends ActionBarActivity implements
 		FrameLayout frameLayout = (FrameLayout) findViewById(R.id.weather_info_container);
 		frameLayout.setVisibility(View.VISIBLE);
 	}
-	
+
 	@Override
-	public void onItemClicked(int position) {
-		// TODO Auto-generated method stub
-		Toast.makeText(this, "POSITION: " + position,
-				Toast.LENGTH_SHORT).show();
+	public void onItemClicked(final int position) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				if (searchResponseForFindQuery == null) {
+					// TODO save it in onSaveInstanceState
+					return; 
+				}
+				CityCurrentWeather selectedCityWeather = searchResponseForFindQuery
+						.getCities().get(position);
+				Gson gson = new Gson();
+				String currentWeather = gson.toJson(selectedCityWeather);
+				MiscMethods.log("MainActivity,onItemClicked currentWeather:" + currentWeather);
+				new SQLOperation(MainActivity.this).insertOrUpdateCity(
+						selectedCityWeather.getCityId(),
+						selectedCityWeather.getCityName(),
+						System.currentTimeMillis(), currentWeather, null);
+			}
+		}).start();
+
 	}
 
 	private class GetAvailableCitiesTask extends

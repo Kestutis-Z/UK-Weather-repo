@@ -136,6 +136,11 @@ public class CityListFragment extends ListFragment implements
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		cursorAdapter.swapCursor(data);
+		// Jump to the top of the list
+		ListView listView = getListView();
+		if (listView != null) {
+			listView.setSelection(0);
+		}
 	}
 
 	@Override

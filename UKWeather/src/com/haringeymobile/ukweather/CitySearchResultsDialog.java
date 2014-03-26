@@ -58,6 +58,7 @@ public class CitySearchResultsDialog extends DialogFragment {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				listener.onItemClicked(position);
+				CitySearchResultsDialog.this.dismiss();
 			}
 			
 		});
