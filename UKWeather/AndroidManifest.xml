@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.haringeymobile.ukweather"
     android:installLocation="preferExternal"
-    android:versionCode="3"
-    android:versionName="0.2.1" >
+    android:versionCode="5"
+    android:versionName="0.2.3" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -29,7 +29,9 @@
             android:name="com.haringeymobile.ukweather.WeatherInfoActivity"
             android:label="@string/weather_info_activity_name" >
         </activity>
-        <activity android:name="com.haringeymobile.ukweather.SearchableActivity" >
+        <activity
+            android:name="com.haringeymobile.ukweather.SearchableActivity"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -38,6 +40,7 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+
         <provider
             android:name="com.haringeymobile.ukweather.datastorage.WeatherContentProvider"
             android:authorities="com.haringeymobile.ukweather.provider"

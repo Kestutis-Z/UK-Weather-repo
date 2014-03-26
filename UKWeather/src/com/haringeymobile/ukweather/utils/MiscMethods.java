@@ -6,7 +6,7 @@ import android.util.Log;
 
 public class MiscMethods {
 
-	private static final boolean LOGS_ON = false;
+	private static final boolean LOGS_ON = true;
 	private static final String LOGS = "Logs";
 
 	public static void log(String s) {

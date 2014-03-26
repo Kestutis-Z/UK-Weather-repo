@@ -9,7 +9,7 @@ import com.haringeymobile.ukweather.data.CityUK;
 
 public class CityTable implements BaseColumns {
 
-	public static final int CITY_NEVER_QUERIED = -1;
+	public static final long CITY_NEVER_QUERIED = -1;
 	public static final int CITY_ID_DOES_NOT_EXIST = -1;
 
 	public static final String TABLE_CITIES = "Cities";
@@ -34,9 +34,11 @@ public class CityTable implements BaseColumns {
 	private static void insertInitialData(SQLiteDatabase database) {
 		for (CityUK city : CityUK.values()) {
 			ContentValues newValues = new ContentValues();
-			newValues.put(CityTable.COLUMN_CITY_ID, city.getOpenWeatherMapId());
-			newValues.put(CityTable.COLUMN_NAME, city.getDisplayName());
-			newValues.put(CityTable.COLUMN_LAST_QUERY_DATE, CITY_NEVER_QUERIED);
+			newValues.put(COLUMN_CITY_ID, city.getOpenWeatherMapId());
+			newValues.put(COLUMN_NAME, city.getDisplayName());
+			newValues.put(COLUMN_LAST_QUERY_DATE, CITY_NEVER_QUERIED);
+			newValues.putNull(COLUMN_CACHED_JSON_CURRENT);
+			newValues.putNull(COLUMN_CACHED_JSON_FORECAST);
 			database.insert(TABLE_CITIES, null, newValues);
 		}
 

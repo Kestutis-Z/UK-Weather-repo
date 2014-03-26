@@ -17,4 +17,8 @@ public class JSONRetriever {
 		return strategy.retrieveJSONString(url);
 	}
 
+	public String getJSONString(URL url) {
+		return strategy.retrieveJSONString(url);
+	}
+
 }

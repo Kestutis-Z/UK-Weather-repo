@@ -1,10 +1,17 @@
 package com.haringeymobile.ukweather;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +33,7 @@ import com.haringeymobile.ukweather.data.json.Coordinates;
 import com.haringeymobile.ukweather.data.json.NumericParameters;
 import com.haringeymobile.ukweather.data.json.Weather;
 import com.haringeymobile.ukweather.datastorage.CityTable;
+import com.haringeymobile.ukweather.datastorage.SQLOperation;
 import com.haringeymobile.ukweather.utils.MiscMethods;
 import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 
@@ -95,7 +103,7 @@ public class WeatherInfoFragment extends Fragment {
 	}
 
 	private class WeatherInformationRetrieverTask extends
-			AsyncTask<Integer, Integer, CityCurrentWeather> {
+			AsyncTask<Integer, Void, CityCurrentWeather> {
 
 		ProgressDialog progressDialog;
 		Resources res = parentActivity.getResources();
@@ -116,24 +124,56 @@ public class WeatherInfoFragment extends Fragment {
 		@Override
 		protected CityCurrentWeather doInBackground(Integer... params) {
 			int cityId = params[0];
-			JSONRetriever jsonRetriever = new JSONRetriever();
-			jsonRetriever
-					.setHttpCallsHandlingStrategy(new JSONRetrievingFromURLStrategy_1());
-			String jsonString = jsonRetriever.getJSONString(cityId);
+			SQLOperation sqlOperation = new SQLOperation(parentActivity);
+			String jsonString = sqlOperation
+					.getJSONStringForCurrentWeather(cityId);
+			if (jsonString == null) {
+				jsonString = getJSONStringFromWebService(cityId);
+			}
 			if (jsonString == null) {
 				return null;
 			} else {
-				/*
-				 * WeatherInformation weatherInformation = new JSONConverter()
-				 * .convert(jsonString, res); return weatherInformation;
-				 */
 				Gson gson = new Gson();
-				// See https://code.google.com/p/google-gson/issues/detail?id=440
+				// See
+				// https://code.google.com/p/google-gson/issues/detail?id=440
 				CityCurrentWeather cityCurrentWeather = gson.fromJson(
 						jsonString, CityCurrentWeather.class);
-				iconDrawable = cityCurrentWeather.getWeather().get(0)
-						.getIconDrawable(res);
+				setWeatherIconDrawable(cityCurrentWeather);
+				sqlOperation.updateCurrentWeather(cityId, jsonString);
 				return cityCurrentWeather;
+			}
+		}
+
+		private String getJSONStringFromWebService(int cityId) {
+			String jsonString;
+			JSONRetriever jsonRetriever = new JSONRetriever();
+			jsonRetriever
+					.setHttpCallsHandlingStrategy(new JSONRetrievingFromURLStrategy_1());
+			jsonString = jsonRetriever.getJSONString(cityId);
+			return jsonString;
+		}
+
+		private void setWeatherIconDrawable(
+				CityCurrentWeather cityCurrentWeather) {
+			String iconName = cityCurrentWeather.getWeather().get(0).getIcon();
+			iconDrawable = getIconDrawable(iconName);
+		}
+
+		private Drawable getIconDrawable(String icon) {
+			String iconUrl = Weather.ICON_URL_PREFIX + icon;
+			try {
+				URL url = new URL(iconUrl);
+				HttpURLConnection connection = (HttpURLConnection) url
+						.openConnection();
+				connection.setDoInput(true);
+				connection.connect();
+				InputStream input = connection.getInputStream();
+				Bitmap myBitmap = BitmapFactory.decodeStream(input);
+				Drawable d = new BitmapDrawable(res, myBitmap);
+				return d;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
 			}
 		}
 
@@ -224,7 +264,8 @@ public class WeatherInfoFragment extends Fragment {
 
 		private void displayHumidity(NumericParameters numericParameters) {
 			String humidityInfo = res.getString(R.string.weather_info_humidity)
-					+ SEPARATOR + numericParameters.getHumidity() + PERCENT_SIGN;
+					+ SEPARATOR + numericParameters.getHumidity()
+					+ PERCENT_SIGN;
 			humidityTextView.setText(humidityInfo);
 		}
 
