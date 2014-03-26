@@ -21,8 +21,10 @@
     
     <string name="error_message">No connection, please try later!</string>
     <string name="loading_message">Loading&#8230;</string>
+    <string name="message_no_cities_found">"Your query has not returned any cities.\n\nHow to search:\n\nPut the city name or its part and get the list of the most proper cities in the world. Example - Lon or Lond or London. The more precise city name you put the more precise list you will get. To make it more precise put the city's name or its part, comma, the name of the county or 2-letter country code. You will get all proper cities in chosen county. The order is important - the first is city name than comma than county. Example - Lon, UK or Lon, GB or London, GB or Lon, England."</string>
     
     <string name="city_search_hint">Search cities</string>
+    <string name="search_results_dialog_title">Search results. Choose a city</string>
     
     <string name="mi_search_title">Search</string>
     <string name="mi_submenu_title">Extras</string>

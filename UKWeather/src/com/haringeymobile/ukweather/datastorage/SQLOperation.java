@@ -65,6 +65,9 @@ public class SQLOperation {
 	}
 
 	private Cursor getCursorWithCurrentWeather(int cityId) {
+		if (context == null) {
+			return null;
+		}
 		Cursor cursor = context.getContentResolver().query(
 				WeatherContentProvider.CONTENT_URI_CITY_RECORDS,
 				new String[] { CityTable._ID, CityTable.COLUMN_LAST_QUERY_DATE,

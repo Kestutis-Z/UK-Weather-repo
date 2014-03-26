@@ -30,8 +30,8 @@ public class CityListFragment extends ListFragment implements
 	}
 
 	static final String LAST_SELECTED_CITY_ID = "city id";
-	private static final int BACKGROUND_RESOURCE_EVEN = R.drawable.clickable_blue;
-	private static final int BACKGROUND_RESOURCE_ODD = R.drawable.clickable_green;
+	static final int BACKGROUND_RESOURCE_EVEN = R.drawable.clickable_blue;
+	static final int BACKGROUND_RESOURCE_ODD = R.drawable.clickable_green;
 	private static final int LOADER_ALL_CITY_RECORDS = 0;
 
 	private Activity parentActivity;

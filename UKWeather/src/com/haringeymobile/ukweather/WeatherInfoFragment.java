@@ -134,8 +134,9 @@ public class WeatherInfoFragment extends Fragment {
 				return null;
 			} else {
 				Gson gson = new Gson();
-				// See
+				// TODO See
 				// https://code.google.com/p/google-gson/issues/detail?id=440
+				// (GSON defect, use v. 1.7.1 for now)
 				CityCurrentWeather cityCurrentWeather = gson.fromJson(
 						jsonString, CityCurrentWeather.class);
 				setWeatherIconDrawable(cityCurrentWeather);
@@ -215,11 +216,7 @@ public class WeatherInfoFragment extends Fragment {
 
 		private void displayConditions(List<Weather> weatherList) {
 			Weather weather = weatherList.get(0);
-			String conditionInfo =
-			/*
-			 * res.getString(R.string.weather_info_conditions) + SEPARATOR +
-			 */
-			weather.getType();
+			String conditionInfo = weather.getType();
 			conditionsTextView.setText(conditionInfo);
 			conditionsImageView.setImageDrawable(iconDrawable);
 		}
