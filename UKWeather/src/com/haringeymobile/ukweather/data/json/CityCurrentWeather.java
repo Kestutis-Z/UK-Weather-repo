@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class CityCurrentWeather {
 
+	@SerializedName("clouds")
 	private Clouds clouds;
 
 	@SerializedName("coord")
@@ -23,6 +24,7 @@ public class CityCurrentWeather {
 	@SerializedName("name")
 	private String cityName;
 
+	@SerializedName("rain")
 	private Rain rain;
 
 	@SerializedName("sys")
@@ -31,6 +33,7 @@ public class CityCurrentWeather {
 	@SerializedName("weather")
 	private List<Weather> weather;
 
+	@SerializedName("wind")
 	private Wind wind;
 
 	public Clouds getClouds() {

@@ -1,29 +1,19 @@
 package com.haringeymobile.ukweather.data.json;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-
 import com.google.gson.annotations.SerializedName;
 
 public class Weather {
 
-	private static final String ICON_URL_PREFIX = "http://openweathermap.org/img/w/";
+	public static final String ICON_URL_PREFIX = "http://openweathermap.org/img/w/";
 
+	@SerializedName("description")
 	private String description;
 
+	@SerializedName("icon")
 	private String icon;
 
+	@SerializedName("id")
 	private int id;
-
-	private Drawable iconDrawable;
 
 	@SerializedName("main")
 	private String type;
@@ -58,24 +48,6 @@ public class Weather {
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public Drawable getIconDrawable(Resources res) {
-		String iconUrl = ICON_URL_PREFIX + icon;
-		try {
-			URL url = new URL(iconUrl);
-			HttpURLConnection connection = (HttpURLConnection) url
-					.openConnection();
-			connection.setDoInput(true);
-			connection.connect();
-			InputStream input = connection.getInputStream();
-			Bitmap myBitmap = BitmapFactory.decodeStream(input);
-			Drawable d = new BitmapDrawable(res, myBitmap);
-			return d;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 }

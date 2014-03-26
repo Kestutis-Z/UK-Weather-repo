@@ -5,14 +5,19 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
 public class SearchResponseForFindQuery {
+	
+	public static final int HTTP_STATUS_CODE_OK = 200;
 
 	@SerializedName("cod")
 	private int code;
 
+	@SerializedName("count")
 	private int count;
 
+	@SerializedName("list")
 	private List<CityCurrentWeather> cities;
 
+	@SerializedName("message")
 	private String message;
 
 	public int getCode() {

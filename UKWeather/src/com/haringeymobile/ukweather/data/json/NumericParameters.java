@@ -6,8 +6,10 @@ public class NumericParameters {
 
 	private static final double DIFFERENCE_BETWEEN_KELVIN_AND_CELCIUS = 273.15;
 
+	@SerializedName("humidity")
 	private double humidity;
 
+	@SerializedName("pressure")
 	private double pressure;
 
 	@SerializedName("temp")

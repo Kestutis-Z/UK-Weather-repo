@@ -7,6 +7,7 @@ public class Wind {
 	@SerializedName("deg")
 	private int directionInDegrees;
 
+	@SerializedName("speed")
 	private double speed;
 
 	public int getDirectionInDegrees() {
