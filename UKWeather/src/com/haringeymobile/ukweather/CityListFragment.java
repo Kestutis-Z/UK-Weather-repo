@@ -80,7 +80,7 @@ public class CityListFragment extends ListFragment implements
 	}
 
 	private void displayCityList() {
-		int rowLayoutID = R.layout.row_city_list;
+		int rowLayoutID = R.layout.row_city_list_with_buttons;
 		int[] to = new int[] { R.id.city_name_in_list_row_text_view };
 		String[] columnsToDisplay = new String[] { CityTable.COLUMN_NAME };
 
@@ -88,6 +88,11 @@ public class CityListFragment extends ListFragment implements
 				null, columnsToDisplay, to, 0);
 
 		setListAdapter(cursorAdapter);
+		ListView listView = getListView();
+		listView.setItemsCanFocus(true);
+		listView.setFocusable(false);
+		listView.setFocusableInTouchMode(false);
+		listView.setClickable(false);
 
 		getLoaderManager().initLoader(LOADER_ALL_CITY_RECORDS, null, this);
 	}

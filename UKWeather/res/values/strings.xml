@@ -17,7 +17,10 @@
     <string name="weather_info_atmospheric_pressure">Atmospheric pressure</string>
     <string name="weather_info_humidity">Humidity</string>
     
-    <string name="weather_consitions_icon_content_description">Weather icon</string>
+    <string name="icon_content_description_weather_conditions">Weather icon</string>
+    <string name="icon_content_description_remove_city">Remove city icon</string>
+    <string name="icon_content_description_current_weather_conditions">Current weather conditions</string>
+    <string name="icon_content_description_weather_forecast">Weather forecast</string>
     
     <string name="error_message">No connection, please try later!</string>
     <string name="loading_message">Loading&#8230;</string>

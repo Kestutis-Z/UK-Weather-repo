@@ -29,7 +29,6 @@ import com.haringeymobile.ukweather.data.OpenWeatherMapURLBuilder;
 import com.haringeymobile.ukweather.data.json.CityCurrentWeather;
 import com.haringeymobile.ukweather.data.json.SearchResponseForFindQuery;
 import com.haringeymobile.ukweather.datastorage.SQLOperation;
-import com.haringeymobile.ukweather.utils.MiscMethods;
 
 public class MainActivity extends ActionBarActivity implements
 		CityListFragment.OnCitySelectedListener,
@@ -163,7 +162,6 @@ public class MainActivity extends ActionBarActivity implements
 						.getCities().get(position);
 				Gson gson = new Gson();
 				String currentWeather = gson.toJson(selectedCityWeather);
-				MiscMethods.log("MainActivity,onItemClicked currentWeather:" + currentWeather);
 				new SQLOperation(MainActivity.this).insertOrUpdateCity(
 						selectedCityWeather.getCityId(),
 						selectedCityWeather.getCityName(),

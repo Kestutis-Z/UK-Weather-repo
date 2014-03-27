@@ -1,7 +1,5 @@
 package com.haringeymobile.ukweather.datastorage;
 
-import com.haringeymobile.ukweather.utils.MiscMethods;
-
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -75,7 +73,6 @@ public class SQLOperation {
 				new String[] { CityTable._ID, CityTable.COLUMN_CITY_ID, },
 				CityTable.COLUMN_CITY_ID + "=?",
 				new String[] { Integer.toString(cityId) }, null);
-		MiscMethods.log("In getCursorWithCityId; row count: ::::::::::;; " + cursor.getCount());
 		return cursor;
 	}
 

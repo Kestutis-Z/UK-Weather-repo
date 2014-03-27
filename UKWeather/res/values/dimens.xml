@@ -23,5 +23,7 @@
     <dimen name="shape_stroke_width">5dp</dimen>
     <dimen name="shape_corners_radius">4dp</dimen>
     <dimen name="shape_padding">5dp</dimen>
+    
+    <dimen name="small_view_width">71dp</dimen>
 
 </resources>

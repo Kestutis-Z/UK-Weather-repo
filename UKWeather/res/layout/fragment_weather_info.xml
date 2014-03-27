@@ -42,7 +42,7 @@
                 android:layout_width="@dimen/icon_dimension"
                 android:layout_height="@dimen/icon_dimension"
                 android:layout_gravity="center"
-                android:contentDescription="@string/weather_consitions_icon_content_description" />
+                android:contentDescription="@string/icon_content_description_weather_conditions" />
 
             <TextView
                 android:id="@+id/weather_conditions_text_view"

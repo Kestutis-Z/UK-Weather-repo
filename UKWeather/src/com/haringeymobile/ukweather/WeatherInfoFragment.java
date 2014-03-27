@@ -133,7 +133,6 @@ public class WeatherInfoFragment extends Fragment {
 			if (jsonString == null) {
 				return null;
 			} else {
-				MiscMethods.log("In WeatherInfoFragment doInBackground; jsonString:\n"+jsonString);
 				Gson gson = new Gson();
 				// TODO See
 				// https://code.google.com/p/google-gson/issues/detail?id=440
