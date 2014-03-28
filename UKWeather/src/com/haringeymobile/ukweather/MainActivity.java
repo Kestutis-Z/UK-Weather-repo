@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.haringeymobile.ukweather.data.JSONRetriever;
+import com.haringeymobile.ukweather.data.JSONRetrievingFromURLStrategy;
 import com.haringeymobile.ukweather.data.JSONRetrievingFromURLStrategy_1;
 import com.haringeymobile.ukweather.data.OpenWeatherMapURLBuilder;
 import com.haringeymobile.ukweather.data.json.CityCurrentWeather;
@@ -202,6 +203,25 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onCityWeatherForecastRequested(int cityId) {
 		// TODO Auto-generated method stub
+		new DialogFragment() {
+
+			@Override
+			public Dialog onCreateDialog(Bundle savedInstanceState) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						getActivity());
+				builder.setTitle(
+						"Sorry, weather forecast is not yet implemented!")
+						.setPositiveButton(android.R.string.ok,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dismiss();
+									}
+								});
+				return builder.create();
+			}
+
+		}.show(getSupportFragmentManager(), CITY_DELETE_DIALOG_FRAGMENT_TAG);
 
 	}
 
@@ -282,7 +302,7 @@ public class MainActivity extends ActionBarActivity implements
 			super.onPostExecute(result);
 			progressDialog.dismiss();
 			if (result == null
-					|| result.getCode() != SearchResponseForFindQuery.HTTP_STATUS_CODE_OK) {
+					|| result.getCode() != JSONRetrievingFromURLStrategy.HTTP_STATUS_CODE_OK) {
 				if (MainActivity.this != null) {
 					Toast.makeText(MainActivity.this, R.string.error_message,
 							Toast.LENGTH_SHORT).show();
