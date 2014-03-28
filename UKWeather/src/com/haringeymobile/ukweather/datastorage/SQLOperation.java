@@ -163,4 +163,11 @@ public class SQLOperation {
 		return WEATHER_DATA_STORAGE_TIME * 60 * 1000;
 	}
 
+	public void deleteCity(int cityId) {
+		context.getContentResolver().delete(
+				WeatherContentProvider.CONTENT_URI_CITY_RECORDS,
+				CityTable.COLUMN_CITY_ID + "=?",
+				new String[] { Integer.toString(cityId) });
+	}
+
 }

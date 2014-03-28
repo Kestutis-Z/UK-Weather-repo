@@ -63,7 +63,7 @@ public class CitySearchResultsDialog extends DialogFragment {
 			
 		});
 
-		getDialog().setTitle(R.string.search_results_dialog_title);
+		getDialog().setTitle(R.string.dialog_title_search_results);
 		return view;
 	}
 

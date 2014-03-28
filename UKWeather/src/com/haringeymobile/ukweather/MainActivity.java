@@ -4,12 +4,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -28,18 +32,25 @@ import com.haringeymobile.ukweather.data.JSONRetrievingFromURLStrategy_1;
 import com.haringeymobile.ukweather.data.OpenWeatherMapURLBuilder;
 import com.haringeymobile.ukweather.data.json.CityCurrentWeather;
 import com.haringeymobile.ukweather.data.json.SearchResponseForFindQuery;
+import com.haringeymobile.ukweather.datastorage.CityTable;
+import com.haringeymobile.ukweather.datastorage.GeneralDatabaseService;
 import com.haringeymobile.ukweather.datastorage.SQLOperation;
+import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 
 public class MainActivity extends ActionBarActivity implements
 		CityListFragment.OnCitySelectedListener,
-		CitySearchResultsDialog.OnCityNamesListItemClickedListener {
+		CitySearchResultsDialog.OnCityNamesListItemClickedListener,
+		DeleteCityDialog.Listener {
 
-	static final String CITY_ID = "city";
+	public static final String CITY_ID = "city id";
 	static final String CITY_LIST = "city list";
 	private static final String LIST_FRAGMENT_TAG = "list fragment";
 	private static final String WEATHER_INFO_FRAGMENT_TAG = "weather fragment";
 	private static final String CITY_SEARCH_RESULTS_FRAGMENT_TAG = "search results";
+	private static final String CITY_DELETE_DIALOG_FRAGMENT_TAG = "delete city dialog";
 	private static final String CITY_NAME_LIST = "city names";
+
+	private static final int MINIMUM_SEARCH_QUERY_STRING_LENGTH = 3;
 
 	private boolean isDualPane;
 	private SearchView searchView;
@@ -82,12 +93,11 @@ public class MainActivity extends ActionBarActivity implements
 		searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		// SearchView searchView = (SearchView)
-		// menu.findItem(R.id.mi_search).getActionView();
-		// Assumes current activity is the searchable activity
 		searchView.setSearchableInfo(searchManager
 				.getSearchableInfo(getComponentName()));
 		searchView.setSubmitButtonEnabled(true);
+		searchView.setQueryHint(getResources().getString(
+				R.string.city_search_hint));
 
 		SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
 
@@ -98,9 +108,13 @@ public class MainActivity extends ActionBarActivity implements
 
 			@Override
 			public boolean onQueryTextSubmit(String query) {
-				new GetAvailableCitiesTask()
-						.execute(new OpenWeatherMapURLBuilder()
-								.getAvailableCitiesListURL(query));
+				if (query.length() < MINIMUM_SEARCH_QUERY_STRING_LENGTH) {
+					showQueryStringTooShortAlertDialog();
+				} else {
+					new GetAvailableCitiesTask()
+							.execute(new OpenWeatherMapURLBuilder()
+									.getAvailableCitiesListURL(query));
+				}
 				return false;
 			}
 		};
@@ -109,11 +123,29 @@ public class MainActivity extends ActionBarActivity implements
 		return true;
 	}
 
+	private void showQueryStringTooShortAlertDialog() {
+		new DialogFragment() {
+
+			@Override
+			public Dialog onCreateDialog(Bundle savedInstanceState) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						getActivity());
+				builder.setTitle(R.string.dialog_title_query_too_short)
+						.setPositiveButton(android.R.string.ok,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dismiss();
+									}
+								});
+				return builder.create();
+			}
+
+		}.show(getSupportFragmentManager(), CITY_DELETE_DIALOG_FRAGMENT_TAG);
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.mi_search) {
 			return true;
@@ -122,14 +154,55 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public void onCitySelected(int cityId) {
+	public void onCityRecordDeletionRequested(int cityId, String cityName) {
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		DeleteCityDialog dialogFragment = (DeleteCityDialog) fragmentManager
+				.findFragmentByTag(CITY_DELETE_DIALOG_FRAGMENT_TAG);
+		if (dialogFragment == null) {
+			dialogFragment = DeleteCityDialog.newInstance(cityId, cityName);
+			dialogFragment.show(fragmentManager,
+					CITY_DELETE_DIALOG_FRAGMENT_TAG);
+		}
+	}
+
+	@Override
+	public void onCityRecordDeletionConfirmed(int cityId) {
+		int lastCityId = SharedPrefsHelper.getIntFromSharedPrefs(this,
+				CityListFragment.LAST_SELECTED_CITY_ID,
+				CityTable.CITY_ID_DOES_NOT_EXIST);
+		if (cityId == lastCityId) {
+			SharedPrefsHelper.putIntIntoSharedPrefs(this,
+					CityListFragment.LAST_SELECTED_CITY_ID,
+					CityTable.CITY_ID_DOES_NOT_EXIST);
+		}
+		removeCity(cityId);
+
+	}
+
+	private void removeCity(int cityId) {
+		Intent intent = new Intent(this, GeneralDatabaseService.class);
+		intent.setAction(GeneralDatabaseService.ACTION_DELETE_CITY_RECORDS);
+		intent.putExtra(CITY_ID, cityId);
+		startService(intent);
+	}
+
+	@Override
+	public void onCityCurrentWeatherRequested(int cityId) {
 		if (isDualPane) {
-			updateWeatherInformation(cityId);
+			if (cityId != CityTable.CITY_ID_DOES_NOT_EXIST) {
+				updateWeatherInformation(cityId);
+			}
 		} else {
 			Intent intent = new Intent(this, WeatherInfoActivity.class);
 			intent.putExtra(CITY_ID, cityId);
 			startActivity(intent);
 		}
+	}
+
+	@Override
+	public void onCityWeatherForecastRequested(int cityId) {
+		// TODO Auto-generated method stub
+
 	}
 
 	public void updateWeatherInformation(int cityId) {
@@ -156,7 +229,7 @@ public class MainActivity extends ActionBarActivity implements
 			public void run() {
 				if (searchResponseForFindQuery == null) {
 					// TODO save it in onSaveInstanceState
-					return; 
+					return;
 				}
 				CityCurrentWeather selectedCityWeather = searchResponseForFindQuery
 						.getCities().get(position);
@@ -216,8 +289,7 @@ public class MainActivity extends ActionBarActivity implements
 				}
 				return;
 			} else if (result.getCount() < 1) {
-				new NoCitiesFoundAlertDialog().show(
-						getSupportFragmentManager(), null);
+				showNoCitiesFoundAlertDialog();
 			} else {
 				ArrayList<String> foundCityNames = getFoundCityNames(result);
 				FragmentManager fragmentManager = getSupportFragmentManager();
@@ -241,6 +313,28 @@ public class MainActivity extends ActionBarActivity implements
 			return foundCityNames;
 		}
 
+	}
+
+	private void showNoCitiesFoundAlertDialog() {
+		new DialogFragment() {
+
+			@Override
+			public Dialog onCreateDialog(Bundle savedInstanceState) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						getActivity());
+				builder.setTitle(R.string.dialog_title_no_cities_found)
+						.setMessage(R.string.message_no_cities_found)
+						.setPositiveButton(android.R.string.ok,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dismiss();
+									}
+								});
+				return builder.create();
+			}
+
+		}.show(getSupportFragmentManager(), CITY_DELETE_DIALOG_FRAGMENT_TAG);
 	}
 
 }

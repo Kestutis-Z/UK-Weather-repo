@@ -34,6 +34,10 @@
             android:name="com.haringeymobile.ukweather.datastorage.WeatherContentProvider"
             android:authorities="com.haringeymobile.ukweather.provider"
             android:exported="false" />
+
+        <service
+            android:name="com.haringeymobile.ukweather.datastorage.GeneralDatabaseService"
+            android:exported="false" />
     </application>
 
 </manifest>
