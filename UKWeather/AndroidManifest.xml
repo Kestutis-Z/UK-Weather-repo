@@ -31,12 +31,12 @@
         </activity>
 
         <provider
-            android:name="com.haringeymobile.ukweather.datastorage.WeatherContentProvider"
+            android:name="com.haringeymobile.ukweather.database.WeatherContentProvider"
             android:authorities="com.haringeymobile.ukweather.provider"
             android:exported="false" />
 
         <service
-            android:name="com.haringeymobile.ukweather.datastorage.GeneralDatabaseService"
+            android:name="com.haringeymobile.ukweather.database.GeneralDatabaseService"
             android:exported="false" />
     </application>
 

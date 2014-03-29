@@ -25,15 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.haringeymobile.ukweather.data.CityUK;
-import com.haringeymobile.ukweather.data.JSONRetriever;
-import com.haringeymobile.ukweather.data.JSONRetrievingFromURLStrategy_1;
-import com.haringeymobile.ukweather.data.json.CityCurrentWeather;
-import com.haringeymobile.ukweather.data.json.Coordinates;
-import com.haringeymobile.ukweather.data.json.NumericParameters;
-import com.haringeymobile.ukweather.data.json.Weather;
-import com.haringeymobile.ukweather.datastorage.CityTable;
-import com.haringeymobile.ukweather.datastorage.SQLOperation;
+import com.haringeymobile.ukweather.data.InitialCity;
+import com.haringeymobile.ukweather.data.JsonParser;
+import com.haringeymobile.ukweather.data.JsonParsingFromUrlUsingHttpConnection;
+import com.haringeymobile.ukweather.data.objects.CityCurrentWeather;
+import com.haringeymobile.ukweather.data.objects.Coordinates;
+import com.haringeymobile.ukweather.data.objects.NumericParameters;
+import com.haringeymobile.ukweather.data.objects.Weather;
+import com.haringeymobile.ukweather.database.CityTable;
+import com.haringeymobile.ukweather.database.SQLOperation;
 import com.haringeymobile.ukweather.utils.MiscMethods;
 import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 
@@ -86,7 +86,7 @@ public class WeatherInfoFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 		int cityId = SharedPrefsHelper.getIntFromSharedPrefs(parentActivity,
 				CityListFragment.LAST_SELECTED_CITY_ID,
-				CityUK.LONDON.getOpenWeatherMapId());
+				InitialCity.LONDON.getOpenWeatherMapId());
 		if (cityId != CityTable.CITY_ID_DOES_NOT_EXIST) {
 			updateWeatherInfo(cityId);
 		}
@@ -147,9 +147,9 @@ public class WeatherInfoFragment extends Fragment {
 
 		private String getJSONStringFromWebService(int cityId) {
 			String jsonString;
-			JSONRetriever jsonRetriever = new JSONRetriever();
+			JsonParser jsonRetriever = new JsonParser();
 			jsonRetriever
-					.setHttpCallsHandlingStrategy(new JSONRetrievingFromURLStrategy_1());
+					.setHttpCallsHandlingStrategy(new JsonParsingFromUrlUsingHttpConnection());
 			jsonString = jsonRetriever.getJSONString(cityId);
 			return jsonString;
 		}

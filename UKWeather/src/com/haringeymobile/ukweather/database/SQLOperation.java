@@ -1,4 +1,4 @@
-package com.haringeymobile.ukweather.datastorage;
+package com.haringeymobile.ukweather.database;
 
 import android.content.ContentUris;
 import android.content.ContentValues;

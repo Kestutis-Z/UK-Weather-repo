@@ -3,7 +3,7 @@ package com.haringeymobile.ukweather.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public enum CityUK implements Parcelable {
+public enum InitialCity implements Parcelable {
 
 	LONDON(2643743, "London"),
 
@@ -30,7 +30,7 @@ public enum CityUK implements Parcelable {
 	private int openWeatherMapId;
 	private String displayName;
 
-	private CityUK(int openWeatherMapId, String displayName) {
+	private InitialCity(int openWeatherMapId, String displayName) {
 		this.openWeatherMapId = openWeatherMapId;
 		this.displayName = displayName;
 	}
@@ -43,11 +43,11 @@ public enum CityUK implements Parcelable {
 		return displayName;
 	}
 
-	public static final Parcelable.Creator<CityUK> CREATOR = new Parcelable.Creator<CityUK>() {
+	public static final Parcelable.Creator<InitialCity> CREATOR = new Parcelable.Creator<InitialCity>() {
 
 		@Override
-		public CityUK createFromParcel(Parcel in) {
-			CityUK city;
+		public InitialCity createFromParcel(Parcel in) {
+			InitialCity city;
 			try {
 				city = valueOf(in.readString());
 			} catch (IllegalArgumentException ex) {
@@ -57,8 +57,8 @@ public enum CityUK implements Parcelable {
 		}
 
 		@Override
-		public CityUK[] newArray(int size) {
-			return new CityUK[size];
+		public InitialCity[] newArray(int size) {
+			return new InitialCity[size];
 		}
 	};
 

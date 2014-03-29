@@ -10,8 +10,8 @@ import java.net.URL;
 
 import com.haringeymobile.ukweather.utils.MiscMethods;
 
-public class JSONRetrievingFromURLStrategy_1 implements
-		JSONRetrievingFromURLStrategy {
+public class JsonParsingFromUrlUsingHttpConnection implements
+		JsonParsingFromUrlStrategy {
 
 	public String retrieveJSONString(URL url) {
 		StringBuilder stringBuilder = null;

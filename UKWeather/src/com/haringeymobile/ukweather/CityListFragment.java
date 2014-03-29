@@ -18,8 +18,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.haringeymobile.ukweather.datastorage.CityTable;
-import com.haringeymobile.ukweather.datastorage.WeatherContentProvider;
+import com.haringeymobile.ukweather.database.CityTable;
+import com.haringeymobile.ukweather.database.WeatherContentProvider;
 import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 
 public class CityListFragment extends ListFragment implements

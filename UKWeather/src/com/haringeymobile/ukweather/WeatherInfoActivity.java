@@ -3,7 +3,7 @@ package com.haringeymobile.ukweather;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
-import com.haringeymobile.ukweather.datastorage.CityTable;
+import com.haringeymobile.ukweather.database.CityTable;
 
 public class WeatherInfoActivity extends ActionBarActivity {
 

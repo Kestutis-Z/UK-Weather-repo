@@ -3,7 +3,7 @@ package com.haringeymobile.ukweather.data;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class OpenWeatherMapURLBuilder {
+public class OpenWeatherMapUrlBuilder {
 
 	private static final String OPEN_WEATHER_MAP_URL_PREFIX = "http://api.openweathermap.org/data/2.5/";
 	private static final String WEATHER = "weather";

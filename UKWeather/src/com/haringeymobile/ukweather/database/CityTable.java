@@ -1,11 +1,11 @@
-package com.haringeymobile.ukweather.datastorage;
+package com.haringeymobile.ukweather.database;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import com.haringeymobile.ukweather.data.CityUK;
+import com.haringeymobile.ukweather.data.InitialCity;
 
 public class CityTable implements BaseColumns {
 
@@ -32,7 +32,7 @@ public class CityTable implements BaseColumns {
 	}
 
 	private static void insertInitialData(SQLiteDatabase database) {
-		for (CityUK city : CityUK.values()) {
+		for (InitialCity city : InitialCity.values()) {
 			ContentValues newValues = new ContentValues();
 			newValues.put(COLUMN_CITY_ID, city.getOpenWeatherMapId());
 			newValues.put(COLUMN_NAME, city.getDisplayName());

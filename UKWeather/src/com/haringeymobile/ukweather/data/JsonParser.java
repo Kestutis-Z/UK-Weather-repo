@@ -2,17 +2,17 @@ package com.haringeymobile.ukweather.data;
 
 import java.net.URL;
 
-public class JSONRetriever {
+public class JsonParser {
 
-	private JSONRetrievingFromURLStrategy strategy;
+	private JsonParsingFromUrlStrategy strategy;
 
 	public void setHttpCallsHandlingStrategy(
-			JSONRetrievingFromURLStrategy strategy) {
+			JsonParsingFromUrlStrategy strategy) {
 		this.strategy = strategy;
 	}
 
 	public String getJSONString(int cityId) {
-		URL url = new OpenWeatherMapURLBuilder()
+		URL url = new OpenWeatherMapUrlBuilder()
 				.getCurrentWeatherByCityIdURL(cityId);
 		return strategy.retrieveJSONString(url);
 	}

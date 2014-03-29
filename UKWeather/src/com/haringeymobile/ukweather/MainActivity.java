@@ -27,15 +27,15 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.haringeymobile.ukweather.data.JSONRetriever;
-import com.haringeymobile.ukweather.data.JSONRetrievingFromURLStrategy;
-import com.haringeymobile.ukweather.data.JSONRetrievingFromURLStrategy_1;
-import com.haringeymobile.ukweather.data.OpenWeatherMapURLBuilder;
-import com.haringeymobile.ukweather.data.json.CityCurrentWeather;
-import com.haringeymobile.ukweather.data.json.SearchResponseForFindQuery;
-import com.haringeymobile.ukweather.datastorage.CityTable;
-import com.haringeymobile.ukweather.datastorage.GeneralDatabaseService;
-import com.haringeymobile.ukweather.datastorage.SQLOperation;
+import com.haringeymobile.ukweather.data.JsonParser;
+import com.haringeymobile.ukweather.data.JsonParsingFromUrlStrategy;
+import com.haringeymobile.ukweather.data.JsonParsingFromUrlUsingHttpConnection;
+import com.haringeymobile.ukweather.data.OpenWeatherMapUrlBuilder;
+import com.haringeymobile.ukweather.data.objects.CityCurrentWeather;
+import com.haringeymobile.ukweather.data.objects.SearchResponseForFindQuery;
+import com.haringeymobile.ukweather.database.CityTable;
+import com.haringeymobile.ukweather.database.GeneralDatabaseService;
+import com.haringeymobile.ukweather.database.SQLOperation;
 import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 
 public class MainActivity extends ActionBarActivity implements
@@ -113,7 +113,7 @@ public class MainActivity extends ActionBarActivity implements
 					showQueryStringTooShortAlertDialog();
 				} else {
 					new GetAvailableCitiesTask()
-							.execute(new OpenWeatherMapURLBuilder()
+							.execute(new OpenWeatherMapUrlBuilder()
 									.getAvailableCitiesListURL(query));
 				}
 				return false;
@@ -283,9 +283,9 @@ public class MainActivity extends ActionBarActivity implements
 
 		@Override
 		protected SearchResponseForFindQuery doInBackground(URL... params) {
-			JSONRetriever jsonRetriever = new JSONRetriever();
+			JsonParser jsonRetriever = new JsonParser();
 			jsonRetriever
-					.setHttpCallsHandlingStrategy(new JSONRetrievingFromURLStrategy_1());
+					.setHttpCallsHandlingStrategy(new JsonParsingFromUrlUsingHttpConnection());
 			String jsonString = jsonRetriever.getJSONString(params[0]);
 			if (jsonString == null) {
 				return null;
@@ -302,7 +302,7 @@ public class MainActivity extends ActionBarActivity implements
 			super.onPostExecute(result);
 			progressDialog.dismiss();
 			if (result == null
-					|| result.getCode() != JSONRetrievingFromURLStrategy.HTTP_STATUS_CODE_OK) {
+					|| result.getCode() != JsonParsingFromUrlStrategy.HTTP_STATUS_CODE_OK) {
 				if (MainActivity.this != null) {
 					Toast.makeText(MainActivity.this, R.string.error_message,
 							Toast.LENGTH_SHORT).show();

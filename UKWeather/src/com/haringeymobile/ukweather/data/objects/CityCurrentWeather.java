@@ -1,4 +1,4 @@
-package com.haringeymobile.ukweather.data.json;
+package com.haringeymobile.ukweather.data.objects;
 
 import java.util.List;
 
