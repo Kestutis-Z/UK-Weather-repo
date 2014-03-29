@@ -29,9 +29,9 @@ import com.haringeymobile.ukweather.data.InitialCity;
 import com.haringeymobile.ukweather.data.JsonParser;
 import com.haringeymobile.ukweather.data.JsonParsingFromUrlUsingHttpConnection;
 import com.haringeymobile.ukweather.data.objects.CityCurrentWeather;
-import com.haringeymobile.ukweather.data.objects.Coordinates;
 import com.haringeymobile.ukweather.data.objects.NumericParameters;
 import com.haringeymobile.ukweather.data.objects.Weather;
+import com.haringeymobile.ukweather.data.objects.Wind;
 import com.haringeymobile.ukweather.database.CityTable;
 import com.haringeymobile.ukweather.database.SQLOperation;
 import com.haringeymobile.ukweather.utils.MiscMethods;
@@ -40,17 +40,17 @@ import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 public class WeatherInfoFragment extends Fragment {
 
 	private static final String SEPARATOR = ": ";
-	private static final String DASH = " - ";
 	private static final String PERCENT_SIGN = "%";
+	private static final String HECTOPASCAL = "hPa";
+
 	private Activity parentActivity;
 	private TextView nameTextView;
-	private TextView locationTextView;
 	private TextView conditionsTextView;
 	private ImageView conditionsImageView;
 	private TextView temperatureTextView;
-	private TextView temperatureRangeTextView;
 	private TextView pressureTextView;
 	private TextView humidityTextView;
+	private TextView windTextView;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -64,20 +64,17 @@ public class WeatherInfoFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_weather_info, container,
 				false);
 		nameTextView = (TextView) view.findViewById(R.id.city_name_text_view);
-		locationTextView = (TextView) view
-				.findViewById(R.id.city_location_text_view);
 		conditionsTextView = (TextView) view
 				.findViewById(R.id.weather_conditions_text_view);
 		conditionsImageView = (ImageView) view
 				.findViewById(R.id.weather_conditions_image_view);
 		temperatureTextView = (TextView) view
 				.findViewById(R.id.temperature_text_view);
-		temperatureRangeTextView = (TextView) view
-				.findViewById(R.id.temperature_range_text_view);
 		pressureTextView = (TextView) view
 				.findViewById(R.id.atmospheric_pressure_text_view);
 		humidityTextView = (TextView) view
 				.findViewById(R.id.humidity_text_view);
+		windTextView = (TextView) view.findViewById(R.id.wind_text_view);
 		return view;
 	}
 
@@ -134,9 +131,6 @@ public class WeatherInfoFragment extends Fragment {
 				return null;
 			} else {
 				Gson gson = new Gson();
-				// TODO See
-				// https://code.google.com/p/google-gson/issues/detail?id=440
-				// (GSON defect, use v. 1.7.1 for now)
 				CityCurrentWeather cityCurrentWeather = gson.fromJson(
 						jsonString, CityCurrentWeather.class);
 				setWeatherIconDrawable(cityCurrentWeather);
@@ -147,10 +141,10 @@ public class WeatherInfoFragment extends Fragment {
 
 		private String getJSONStringFromWebService(int cityId) {
 			String jsonString;
-			JsonParser jsonRetriever = new JsonParser();
-			jsonRetriever
-					.setHttpCallsHandlingStrategy(new JsonParsingFromUrlUsingHttpConnection());
-			jsonString = jsonRetriever.getJSONString(cityId);
+			JsonParser jsonParser = new JsonParser();
+			jsonParser
+					.setJsonParsingStrategy(new JsonParsingFromUrlUsingHttpConnection());
+			jsonString = jsonParser.getJsonString(cityId);
 			return jsonString;
 		}
 
@@ -190,10 +184,10 @@ public class WeatherInfoFragment extends Fragment {
 				return;
 			}
 			nameTextView.setText(cityWeather.getCityName());
-			displayLocationText(cityWeather.getCoordinates());
 			displayConditions(cityWeather.getWeather());
 			displayWeatherNumericParametersText(cityWeather
 					.getNumericParameters());
+			displayWindInfo(cityWeather.getWind());
 			if (parentActivity != null) {
 				ScrollView weatherInfoScrollView = ((ScrollView) parentActivity
 						.findViewById(R.id.weather_info_scroll_view));
@@ -203,21 +197,11 @@ public class WeatherInfoFragment extends Fragment {
 			}
 		}
 
-		private void displayLocationText(Coordinates coordinates) {
-			String locationInfo = res
-					.getString(R.string.weather_info_longitude)
-					+ SEPARATOR
-					+ coordinates.getLongitude();
-			locationInfo += ", ";
-			locationInfo += res.getString(R.string.weather_info_latitude)
-					+ SEPARATOR + coordinates.getLatitude();
-			locationTextView.setText(locationInfo);
-		}
-
 		private void displayConditions(List<Weather> weatherList) {
 			Weather weather = weatherList.get(0);
-			String conditionInfo = weather.getType();
-			conditionsTextView.setText(conditionInfo);
+			String weatherDescription = weather.getType() + " ("
+					+ weather.getDescription() + ")";
+			conditionsTextView.setText(weatherDescription);
 			conditionsImageView.setImageDrawable(iconDrawable);
 		}
 
@@ -233,29 +217,16 @@ public class WeatherInfoFragment extends Fragment {
 					.formatDoubleValue(numericParameters.getTemperature())
 					+ res.getString(R.string.weather_info_degree_celcius);
 			temperatureTextView.setText(temperatureInfo);
-
-			String temperatureRangeInfo = res
-					.getString(R.string.weather_info_temperature_range)
-					+ SEPARATOR
-					+ getTemperatureRangeText(numericParameters)
-					+ res.getString(R.string.weather_info_degree_celcius);
-			temperatureRangeTextView.setText(temperatureRangeInfo);
-		}
-
-		private String getTemperatureRangeText(
-				NumericParameters numericParameters) {
-			return MiscMethods.formatDoubleValue(numericParameters
-					.getMinTemperature())
-					+ DASH
-					+ MiscMethods.formatDoubleValue(numericParameters
-							.getMaxTemperature());
 		}
 
 		private void displayAtmosphericPressureText(
 				NumericParameters numericParameters) {
 			String pressureInfo = res
 					.getString(R.string.weather_info_atmospheric_pressure)
-					+ SEPARATOR + numericParameters.getPressure();
+					+ SEPARATOR
+					+ numericParameters.getPressure()
+					+ " "
+					+ HECTOPASCAL;
 			pressureTextView.setText(pressureInfo);
 		}
 
@@ -264,6 +235,20 @@ public class WeatherInfoFragment extends Fragment {
 					+ SEPARATOR + numericParameters.getHumidity()
 					+ PERCENT_SIGN;
 			humidityTextView.setText(humidityInfo);
+		}
+
+		private void displayWindInfo(Wind wind) {
+			String windInfo = res.getString(R.string.weather_info_wind_speed)
+					+ SEPARATOR + wind.getSpeedInMilesPerSecond() + " "
+					+ res.getString(R.string.miles_per_second);
+			windInfo += "\n"
+					+ res.getString(R.string.weather_info_wind_direction)
+					+ SEPARATOR + wind.getDirectionInDegrees()
+					+ res.getString(R.string.weather_info_degree);
+			windInfo += " ("
+					+ res.getString(wind.getCardinalDirectionStringResource())
+					+ ")";
+			windTextView.setText(windInfo);
 		}
 
 	}

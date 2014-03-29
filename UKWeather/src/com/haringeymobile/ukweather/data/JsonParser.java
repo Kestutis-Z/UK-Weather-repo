@@ -6,12 +6,12 @@ public class JsonParser {
 
 	private JsonParsingFromUrlStrategy strategy;
 
-	public void setHttpCallsHandlingStrategy(
+	public void setJsonParsingStrategy(
 			JsonParsingFromUrlStrategy strategy) {
 		this.strategy = strategy;
 	}
 
-	public String getJSONString(int cityId) {
+	public String getJsonString(int cityId) {
 		URL url = new OpenWeatherMapUrlBuilder()
 				.getCurrentWeatherByCityIdURL(cityId);
 		return strategy.retrieveJSONString(url);

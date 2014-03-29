@@ -4,7 +4,7 @@
     <item android:state_pressed="true">
         <shape>
             <gradient 
-                android:angle="@integer/button_shape_gradient_angle" 
+                android:angle="@integer/background_shape_gradient_angle" 
                 android:endColor="@color/blue1" 
                 android:startColor="@color/blue2" />
             <stroke 
@@ -24,7 +24,7 @@
     <item>
         <shape>
             <gradient 
-                android:angle="@integer/button_shape_gradient_angle" 
+                android:angle="@integer/background_shape_gradient_angle" 
                 android:endColor="@color/blue2" 
                 android:startColor="@color/blue1" />
             <stroke 

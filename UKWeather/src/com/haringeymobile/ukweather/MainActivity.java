@@ -285,7 +285,7 @@ public class MainActivity extends ActionBarActivity implements
 		protected SearchResponseForFindQuery doInBackground(URL... params) {
 			JsonParser jsonRetriever = new JsonParser();
 			jsonRetriever
-					.setHttpCallsHandlingStrategy(new JsonParsingFromUrlUsingHttpConnection());
+					.setJsonParsingStrategy(new JsonParsingFromUrlUsingHttpConnection());
 			String jsonString = jsonRetriever.getJSONString(params[0]);
 			if (jsonString == null) {
 				return null;

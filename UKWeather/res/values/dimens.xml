@@ -11,10 +11,12 @@
     <dimen name="padding_small">3dp</dimen>
     <dimen name="padding_medium">6dp</dimen>
     <dimen name="padding_large">10dp</dimen>
+    <dimen name="padding_very_large">15dp</dimen>
     
-    <dimen name="text_size_small">15dp</dimen>
-    <dimen name="text_size_medium">25dp</dimen>
-    <dimen name="text_size_large">40dp</dimen>
+    <dimen name="text_size_small">13dp</dimen>
+    <dimen name="text_size_medium">20dp</dimen>
+    <dimen name="text_size_large">29dp</dimen>
+    <dimen name="text_size_very_large">43dp</dimen>
     
     <dimen name="list_divider_height">4dp</dimen>
     

@@ -14,8 +14,11 @@
     <string name="weather_info_temperature_range">Temperature range</string>
     <string name="weather_info_degree_celcius">\u2103</string>
     <string name="weather_info_degree_fahrenheit">\u2109</string>
-    <string name="weather_info_atmospheric_pressure">Atmospheric pressure</string>
+    <string name="weather_info_degree">\u00b0</string>
+    <string name="weather_info_atmospheric_pressure">Pressure</string>
     <string name="weather_info_humidity">Humidity</string>
+    <string name="weather_info_wind_speed">Wind speed</string>
+    <string name="weather_info_wind_direction">Wind direction</string>
     
     <string name="icon_content_description_weather_conditions">Weather icon</string>
     <string name="icon_content_description_remove_city">Remove city icon</string>
@@ -38,5 +41,24 @@
     <string name="mi_rate_application_title">Rate application!</string>
     <string name="mi_more_apps_title">More apps!</string>  
     <string name="mi_about_program_title">About</string>
+    
+    <string name="direction_n">North</string>
+    <string name="direction_nne">North-northeast</string>
+    <string name="direction_ne">NorthEast</string>
+    <string name="direction_ene">East-northeast</string>
+    <string name="direction_e">East</string>
+    <string name="direction_ese">East-southeast</string>
+    <string name="direction_se">SouthEast</string>
+    <string name="direction_sse">South-southeast</string>
+    <string name="direction_s">South</string>
+    <string name="direction_ssw">South-southwest</string>
+    <string name="direction_sw">Southwest</string>
+    <string name="direction_wsw">West-southwest</string>
+    <string name="direction_w">West</string>
+    <string name="direction_wnw">West-northwest</string>
+    <string name="direction_nw">Northwest</string>
+    <string name="direction_nnw">North-northwest</string>
+    
+    <string name="miles_per_second">mps</string>
     
 </resources>
