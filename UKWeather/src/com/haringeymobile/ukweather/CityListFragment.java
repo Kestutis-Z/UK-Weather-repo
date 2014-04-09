@@ -29,13 +29,11 @@ public class CityListFragment extends ListFragment implements
 
 		public void onCityRecordDeletionRequested(int cityId, String cityName);
 
-		public void onCityCurrentWeatherRequested(int cityId);
-
-		public void onCityWeatherForecastRequested(int cityId);
+		public void onCityWeatherInfoRequested(int cityId,
+				WeatherInfoType weatherInfoType);
 
 	}
 
-	public static final String LAST_SELECTED_CITY_ID = "city id";
 	static final int BACKGROUND_RESOURCE_EVEN = R.drawable.clickable_blue;
 	static final int BACKGROUND_RESOURCE_ODD = R.drawable.clickable_green;
 	private static final int LOADER_ALL_CITY_RECORDS = 0;
@@ -73,10 +71,14 @@ public class CityListFragment extends ListFragment implements
 				.findViewById(R.id.weather_info_container) != null;
 		if (isDualPane) {
 			getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-			int lastCityId = SharedPrefsHelper.getIntFromSharedPrefs(
-					parentActivity, LAST_SELECTED_CITY_ID,
-					CityTable.CITY_ID_DOES_NOT_EXIST);
-			listener.onCityCurrentWeatherRequested(lastCityId);
+			int lastCityId = SharedPrefsHelper
+					.getCityIdFromSharedPrefs(parentActivity);
+			if (lastCityId != CityTable.CITY_ID_DOES_NOT_EXIST) {
+				WeatherInfoType lastWeatherInfoType = SharedPrefsHelper
+						.getLastWeatherInfoTypeFromSharedPrefs(parentActivity);
+				listener.onCityWeatherInfoRequested(lastCityId,
+						lastWeatherInfoType);
+			}
 		}
 	}
 
@@ -117,7 +119,7 @@ public class CityListFragment extends ListFragment implements
 		String[] projection = null;
 		String selection = null;
 		String[] selectionArgs = null;
-		String sortOrder = CityTable.COLUMN_LAST_QUERY_DATE + " DESC";
+		String sortOrder = CityTable.COLUMN_LAST_OVERALL_QUERY_TIME + " DESC";
 
 		CursorLoader cursorLoader = new CursorLoader(parentActivity,
 				WeatherContentProvider.CONTENT_URI_CITY_RECORDS, projection,
@@ -144,22 +146,30 @@ public class CityListFragment extends ListFragment implements
 	public void onClick(View view) {
 		int position = getListView().getPositionForView(view);
 		int cityId = cursorAdapter.getCityId(position);
-		switch (view.getId()) {
-		case R.id.city_delete_button:
+		int viewId = view.getId();
+		if (viewId == R.id.city_delete_button) {
 			listener.onCityRecordDeletionRequested(cityId,
 					cursorAdapter.getCityName(position));
-			break;
-		case R.id.city_current_weather_button:
-			SharedPrefsHelper.putIntIntoSharedPrefs(parentActivity,
-					LAST_SELECTED_CITY_ID, cityId);
-			listener.onCityCurrentWeatherRequested(cityId);
-			break;
-		case R.id.city_weather_forecast_button:
-			listener.onCityWeatherForecastRequested(cityId);
-			break;
-		default:
-			throw new IllegalArgumentException("Not supported view ID: "
-					+ view.getId());
+		} else {
+			WeatherInfoType weatherInfoType;
+			switch (viewId) {
+			case R.id.city_current_weather_button:
+				weatherInfoType = WeatherInfoType.CURRENT_WEATHER;
+				break;
+			case R.id.city_daily_weather_forecast_button:
+				weatherInfoType = WeatherInfoType.DAILY_WEATHER_FORECAST;
+				break;
+			case R.id.city_three_hourly_weather_forecast_button:
+				weatherInfoType = WeatherInfoType.THREE_HOURLY_WEATHER_FORECAST;
+				break;
+			default:
+				throw new IllegalArgumentException("Not supported view ID: "
+						+ viewId);
+			}
+			SharedPrefsHelper.putCityIdIntoSharedPrefs(parentActivity, cityId);
+			SharedPrefsHelper.putLastWeatherInfoTypeIntoSharedPrefs(
+					parentActivity, weatherInfoType);
+			listener.onCityWeatherInfoRequested(cityId, weatherInfoType);
 		}
 	}
 
@@ -168,7 +178,8 @@ public class CityListFragment extends ListFragment implements
 		TextView cityNameTextView;
 		ImageButton buttonDelete;
 		ImageButton buttonCurrentWeather;
-		ImageButton buttonWeatherForecast;
+		ImageButton buttonDailyForecast;
+		ImageButton buttonThreeHourlyForecast;
 
 	}
 
@@ -205,11 +216,15 @@ public class CityListFragment extends ListFragment implements
 					.findViewById(R.id.city_delete_button);
 			holder.buttonCurrentWeather = (ImageButton) rowView
 					.findViewById(R.id.city_current_weather_button);
-			holder.buttonWeatherForecast = (ImageButton) rowView
-					.findViewById(R.id.city_weather_forecast_button);
+			holder.buttonDailyForecast = (ImageButton) rowView
+					.findViewById(R.id.city_daily_weather_forecast_button);
+			holder.buttonThreeHourlyForecast = (ImageButton) rowView
+					.findViewById(R.id.city_three_hourly_weather_forecast_button);
 			holder.buttonDelete.setOnClickListener(onClickListener);
 			holder.buttonCurrentWeather.setOnClickListener(onClickListener);
-			holder.buttonWeatherForecast.setOnClickListener(onClickListener);
+			holder.buttonDailyForecast.setOnClickListener(onClickListener);
+			holder.buttonThreeHourlyForecast
+					.setOnClickListener(onClickListener);
 			rowView.setTag(holder);
 
 			return rowView;

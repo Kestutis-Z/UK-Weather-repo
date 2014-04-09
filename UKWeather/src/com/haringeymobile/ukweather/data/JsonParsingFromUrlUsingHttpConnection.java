@@ -13,7 +13,7 @@ import com.haringeymobile.ukweather.utils.MiscMethods;
 public class JsonParsingFromUrlUsingHttpConnection implements
 		JsonParsingFromUrlStrategy {
 
-	public String retrieveJSONString(URL url) {
+	public String parseJsonString(URL url) {
 		StringBuilder stringBuilder = null;
 		try {
 			HttpURLConnection connection = getConnection(url);
@@ -43,8 +43,6 @@ public class JsonParsingFromUrlUsingHttpConnection implements
 		connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod(GET);
 		connection.setDoInput(true);
-		// See
-		// http://developer.android.com/reference/java/net/URLConnection.html#setConnectTimeout(int)
 		connection.setConnectTimeout(TIMEOUT);
 		connection.setReadTimeout(TIMEOUT);
 		connection.connect();

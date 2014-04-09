@@ -1,18 +1,13 @@
 package com.haringeymobile.ukweather;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,49 +17,59 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.haringeymobile.ukweather.data.JsonParser;
-import com.haringeymobile.ukweather.data.JsonParsingFromUrlStrategy;
-import com.haringeymobile.ukweather.data.JsonParsingFromUrlUsingHttpConnection;
-import com.haringeymobile.ukweather.data.OpenWeatherMapUrlBuilder;
+import com.haringeymobile.ukweather.data.OpenWeatherMapUrl;
 import com.haringeymobile.ukweather.data.objects.CityCurrentWeather;
 import com.haringeymobile.ukweather.data.objects.SearchResponseForFindQuery;
 import com.haringeymobile.ukweather.database.CityTable;
 import com.haringeymobile.ukweather.database.GeneralDatabaseService;
-import com.haringeymobile.ukweather.database.SQLOperation;
+import com.haringeymobile.ukweather.database.SqlOperation;
 import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 
 public class MainActivity extends ActionBarActivity implements
 		CityListFragment.OnCitySelectedListener,
+		GetAvailableCitiesTask.Listener,
 		CitySearchResultsDialog.OnCityNamesListItemClickedListener,
-		DeleteCityDialog.Listener {
+		DeleteCityDialog.Listener, WorkerFragmentToRetrieveJsonString.Listener {
 
 	public static final String CITY_ID = "city id";
-	static final String CITY_LIST = "city list";
-	private static final String LIST_FRAGMENT_TAG = "list fragment";
-	private static final String WEATHER_INFO_FRAGMENT_TAG = "weather fragment";
-	private static final String CITY_SEARCH_RESULTS_FRAGMENT_TAG = "search results";
-	private static final String CITY_DELETE_DIALOG_FRAGMENT_TAG = "delete city dialog";
-	private static final String CITY_NAME_LIST = "city names";
+	public static final String WEATHER_INFORMATION_TYPE = "weather info type";
+	public static final String WEATHER_INFO_JSON_STRING = "json string";
 
+	private static final String LIST_FRAGMENT_TAG = "list fragment";
+	private static final String WORKER_FRAGMENT_TAG = "worker fragment";
 	private static final int MINIMUM_SEARCH_QUERY_STRING_LENGTH = 3;
 
 	private boolean isDualPane;
-	private SearchView searchView;
 	private SearchResponseForFindQuery searchResponseForFindQuery;
+	private WorkerFragmentToRetrieveJsonString workerFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		isDualPane = (FrameLayout) findViewById(R.id.weather_info_container) != null;
+		if (savedInstanceState != null) {
+			String jsonString = savedInstanceState
+					.getString(WEATHER_INFO_JSON_STRING);
+			if (jsonString != null) {
+				searchResponseForFindQuery = new Gson().fromJson(jsonString,
+						SearchResponseForFindQuery.class);
+			}
+		}
+
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager
 				.beginTransaction();
+		workerFragment = (WorkerFragmentToRetrieveJsonString) fragmentManager
+				.findFragmentByTag(WORKER_FRAGMENT_TAG);
+		if (workerFragment == null) {
+			workerFragment = new WorkerFragmentToRetrieveJsonString();
+			fragmentTransaction.add(workerFragment, WORKER_FRAGMENT_TAG);
+		}
 		Fragment cityListFragment = fragmentManager
 				.findFragmentByTag(LIST_FRAGMENT_TAG);
 		if (cityListFragment == null) {
@@ -72,18 +77,16 @@ public class MainActivity extends ActionBarActivity implements
 			fragmentTransaction.add(R.id.city_list_container, cityListFragment,
 					LIST_FRAGMENT_TAG);
 		}
-
-		isDualPane = (FrameLayout) findViewById(R.id.weather_info_container) != null;
-		if (isDualPane && savedInstanceState != null) {
-			WeatherInfoFragment weatherInfoFragment = (WeatherInfoFragment) fragmentManager
-					.findFragmentByTag(WEATHER_INFO_FRAGMENT_TAG);
-			if (weatherInfoFragment == null) {
-				weatherInfoFragment = new WeatherInfoFragment();
-				fragmentTransaction.replace(R.id.weather_info_container,
-						weatherInfoFragment, WEATHER_INFO_FRAGMENT_TAG);
-			}
-		}
 		fragmentTransaction.commit();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if (searchResponseForFindQuery != null) {
+			outState.putString(WEATHER_INFO_JSON_STRING,
+					new Gson().toJson(searchResponseForFindQuery));
+		}
 	}
 
 	@Override
@@ -91,7 +94,8 @@ public class MainActivity extends ActionBarActivity implements
 		getMenuInflater().inflate(R.menu.main, menu);
 
 		MenuItem searchItem = menu.findItem(R.id.mi_search);
-		searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+		SearchView searchView = (SearchView) MenuItemCompat
+				.getActionView(searchItem);
 
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		searchView.setSearchableInfo(searchManager
@@ -112,9 +116,10 @@ public class MainActivity extends ActionBarActivity implements
 				if (query.length() < MINIMUM_SEARCH_QUERY_STRING_LENGTH) {
 					showQueryStringTooShortAlertDialog();
 				} else {
-					new GetAvailableCitiesTask()
-							.execute(new OpenWeatherMapUrlBuilder()
-									.getAvailableCitiesListURL(query));
+					new GetAvailableCitiesTask(MainActivity.this).setContext(
+							MainActivity.this).execute(
+							new OpenWeatherMapUrl()
+									.getAvailableCitiesListUrl(query));
 				}
 				return false;
 			}
@@ -142,7 +147,8 @@ public class MainActivity extends ActionBarActivity implements
 				return builder.create();
 			}
 
-		}.show(getSupportFragmentManager(), CITY_DELETE_DIALOG_FRAGMENT_TAG);
+		}.show(getSupportFragmentManager(),
+				GetAvailableCitiesTask.CITY_DELETE_DIALOG_FRAGMENT_TAG);
 	}
 
 	@Override
@@ -155,29 +161,31 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
+	public void onSearchResponseForFindQueryRetrieved(
+			SearchResponseForFindQuery searchResponseForFindQuery) {
+		this.searchResponseForFindQuery = searchResponseForFindQuery;
+	}
+
+	@Override
 	public void onCityRecordDeletionRequested(int cityId, String cityName) {
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		DeleteCityDialog dialogFragment = (DeleteCityDialog) fragmentManager
-				.findFragmentByTag(CITY_DELETE_DIALOG_FRAGMENT_TAG);
+				.findFragmentByTag(GetAvailableCitiesTask.CITY_DELETE_DIALOG_FRAGMENT_TAG);
 		if (dialogFragment == null) {
 			dialogFragment = DeleteCityDialog.newInstance(cityId, cityName);
 			dialogFragment.show(fragmentManager,
-					CITY_DELETE_DIALOG_FRAGMENT_TAG);
+					GetAvailableCitiesTask.CITY_DELETE_DIALOG_FRAGMENT_TAG);
 		}
 	}
 
 	@Override
 	public void onCityRecordDeletionConfirmed(int cityId) {
-		int lastCityId = SharedPrefsHelper.getIntFromSharedPrefs(this,
-				CityListFragment.LAST_SELECTED_CITY_ID,
-				CityTable.CITY_ID_DOES_NOT_EXIST);
+		int lastCityId = SharedPrefsHelper.getCityIdFromSharedPrefs(this);
 		if (cityId == lastCityId) {
-			SharedPrefsHelper.putIntIntoSharedPrefs(this,
-					CityListFragment.LAST_SELECTED_CITY_ID,
+			SharedPrefsHelper.putCityIdIntoSharedPrefs(this,
 					CityTable.CITY_ID_DOES_NOT_EXIST);
 		}
 		removeCity(cityId);
-
 	}
 
 	private void removeCity(int cityId) {
@@ -188,173 +196,75 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public void onCityCurrentWeatherRequested(int cityId) {
-		if (isDualPane) {
-			if (cityId != CityTable.CITY_ID_DOES_NOT_EXIST) {
-				updateWeatherInformation(cityId);
-			}
-		} else {
-			Intent intent = new Intent(this, WeatherInfoActivity.class);
-			intent.putExtra(CITY_ID, cityId);
-			startActivity(intent);
-		}
-	}
-
-	@Override
-	public void onCityWeatherForecastRequested(int cityId) {
-		// TODO Auto-generated method stub
-		new DialogFragment() {
-
-			@Override
-			public Dialog onCreateDialog(Bundle savedInstanceState) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						getActivity());
-				builder.setTitle(
-						"Sorry, weather forecast is not yet implemented!")
-						.setPositiveButton(android.R.string.ok,
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										dismiss();
-									}
-								});
-				return builder.create();
-			}
-
-		}.show(getSupportFragmentManager(), CITY_DELETE_DIALOG_FRAGMENT_TAG);
-
-	}
-
-	public void updateWeatherInformation(int cityId) {
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		WeatherInfoFragment weatherInfoFragment = (WeatherInfoFragment) fragmentManager
-				.findFragmentByTag(WEATHER_INFO_FRAGMENT_TAG);
-		if (weatherInfoFragment == null || !weatherInfoFragment.isInLayout()) {
-			FragmentTransaction fragmentTransaction = fragmentManager
-					.beginTransaction();
-			fragmentTransaction.replace(R.id.weather_info_container,
-					new WeatherInfoFragment(), WEATHER_INFO_FRAGMENT_TAG);
-			fragmentTransaction.commit();
-		}
-
-		FrameLayout frameLayout = (FrameLayout) findViewById(R.id.weather_info_container);
-		frameLayout.setVisibility(View.VISIBLE);
-	}
-
-	@Override
-	public void onItemClicked(final int position) {
+	public void onFoundCityNamesItemClicked(final int position) {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				if (searchResponseForFindQuery == null) {
-					// TODO save it in onSaveInstanceState
 					return;
 				}
 				CityCurrentWeather selectedCityWeather = searchResponseForFindQuery
 						.getCities().get(position);
 				Gson gson = new Gson();
 				String currentWeather = gson.toJson(selectedCityWeather);
-				new SQLOperation(MainActivity.this).insertOrUpdateCity(
-						selectedCityWeather.getCityId(),
-						selectedCityWeather.getCityName(),
-						System.currentTimeMillis(), currentWeather, null);
+				new SqlOperation(MainActivity.this,
+						WeatherInfoType.CURRENT_WEATHER)
+						.updateOrInsertCityWithCurrentWeather(
+								selectedCityWeather.getCityId(),
+								selectedCityWeather.getCityName(),
+								currentWeather);
 			}
 		}).start();
 
 	}
 
-	private class GetAvailableCitiesTask extends
-			AsyncTask<URL, Void, SearchResponseForFindQuery> {
-
-		private ProgressDialog progressDialog;
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			progressDialog = new ProgressDialog(MainActivity.this);
-			progressDialog.setMessage(getResources().getString(
-					R.string.loading_message));
-			progressDialog.setIndeterminate(false);
-			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			progressDialog.setCancelable(true);
-			progressDialog.show();
-		}
-
-		@Override
-		protected SearchResponseForFindQuery doInBackground(URL... params) {
-			JsonParser jsonRetriever = new JsonParser();
-			jsonRetriever
-					.setJsonParsingStrategy(new JsonParsingFromUrlUsingHttpConnection());
-			String jsonString = jsonRetriever.getJSONString(params[0]);
-			if (jsonString == null) {
-				return null;
-			} else {
-				Gson gson = new Gson();
-				searchResponseForFindQuery = gson.fromJson(jsonString,
-						SearchResponseForFindQuery.class);
-				return searchResponseForFindQuery;
-			}
-		}
-
-		@Override
-		protected void onPostExecute(SearchResponseForFindQuery result) {
-			super.onPostExecute(result);
-			progressDialog.dismiss();
-			if (result == null
-					|| result.getCode() != JsonParsingFromUrlStrategy.HTTP_STATUS_CODE_OK) {
-				if (MainActivity.this != null) {
-					Toast.makeText(MainActivity.this, R.string.error_message,
-							Toast.LENGTH_SHORT).show();
-				}
-				return;
-			} else if (result.getCount() < 1) {
-				showNoCitiesFoundAlertDialog();
-			} else {
-				ArrayList<String> foundCityNames = getFoundCityNames(result);
-				FragmentManager fragmentManager = getSupportFragmentManager();
-				CitySearchResultsDialog citySearchResultsDialog = CitySearchResultsDialog
-						.newInstance(foundCityNames);
-				citySearchResultsDialog.show(fragmentManager,
-						CITY_SEARCH_RESULTS_FRAGMENT_TAG);
-				Bundle bundle = new Bundle();
-				bundle.putStringArrayList(CITY_NAME_LIST, foundCityNames);
-			}
-		}
-
-		private ArrayList<String> getFoundCityNames(
-				SearchResponseForFindQuery result) {
-			ArrayList<String> foundCityNames = new ArrayList<>();
-			List<CityCurrentWeather> cities = result.getCities();
-			for (CityCurrentWeather city : cities) {
-				foundCityNames.add(city.getCityName() + ", "
-						+ city.getSystemParameters().getCountry());
-			}
-			return foundCityNames;
-		}
-
+	@Override
+	public void onCityWeatherInfoRequested(int cityId,
+			WeatherInfoType weatherInfoType) {
+		workerFragment.retrieveWeatherInfoJsonString(cityId, weatherInfoType);
 	}
 
-	private void showNoCitiesFoundAlertDialog() {
-		new DialogFragment() {
+	@Override
+	public void onJsonStringRetrieved(String jsonString,
+			WeatherInfoType weatherInfoType) {
+		saveRetrievedData(jsonString, weatherInfoType);
+		if (isDualPane) {
+			displayRetrievedDataInThisActivity(jsonString, weatherInfoType);
+		} else {
+			displayRetrievedDataInNewActivity(jsonString, weatherInfoType);
+		}
+	}
 
-			@Override
-			public Dialog onCreateDialog(Bundle savedInstanceState) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						getActivity());
-				builder.setTitle(R.string.dialog_title_no_cities_found)
-						.setMessage(R.string.message_no_cities_found)
-						.setPositiveButton(android.R.string.ok,
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										dismiss();
-									}
-								});
-				return builder.create();
-			}
+	private void saveRetrievedData(String jsonString,
+			WeatherInfoType weatherInfoType) {
+		Intent intent = new Intent(this, GeneralDatabaseService.class);
+		intent.setAction(GeneralDatabaseService.ACTION_UPDATE_WEATHER_INFO);
+		intent.putExtra(WEATHER_INFO_JSON_STRING, jsonString);
+		intent.putExtra(WEATHER_INFORMATION_TYPE, (Parcelable) weatherInfoType);
+		startService(intent);
+	}
 
-		}.show(getSupportFragmentManager(), CITY_DELETE_DIALOG_FRAGMENT_TAG);
+	private void displayRetrievedDataInThisActivity(String jsonString,
+			WeatherInfoType weatherInfoType) {
+		Fragment fragment;
+		if (weatherInfoType == WeatherInfoType.CURRENT_WEATHER) {
+			fragment = WeatherInfoFragment.newInstance(weatherInfoType, null,
+					jsonString);
+		} else {
+			fragment = WeatherForecastParentFragment.newInstance(
+					weatherInfoType, jsonString);
+		}
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.weather_info_container, fragment).commit();
+	}
+
+	private void displayRetrievedDataInNewActivity(String jsonString,
+			WeatherInfoType weatherInfoType) {
+		Intent intent = new Intent(this, WeatherInfoActivity.class);
+		intent.putExtra(WEATHER_INFORMATION_TYPE, (Parcelable) weatherInfoType);
+		intent.putExtra(WEATHER_INFO_JSON_STRING, jsonString);
+		startActivity(intent);
 	}
 
 }

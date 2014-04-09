@@ -3,19 +3,19 @@
 
     <item
         android:id="@+id/mi_search"
-        android:icon="@drawable/as_search"
+        android:icon="@drawable/search"
         android:title="@string/mi_search_title"
         weather:actionViewClass="android.support.v7.widget.SearchView"
         weather:showAsAction="always"/>
     <item
         android:id="@+id/mi_main_submenu"
-        android:icon="@drawable/aas_overflow"
+        android:icon="@drawable/overflow"
         android:title="@string/mi_submenu_title"
         weather:showAsAction="always">
         <menu>
             <item
                 android:id="@+id/mi_settings"
-                android:icon="@drawable/aas_settings"
+                android:icon="@drawable/settings"
                 android:title="@string/mi_settings_title"
                 weather:showAsAction="never"/>
             <!--
@@ -24,11 +24,6 @@
                 android:icon="@drawable/aas_rating"
                 weather:showAsAction="never"
                 android:title="@string/mi_rate_application"/>
-            <item
-                android:id="@+id/mi_more_apps"
-                android:icon="@drawable/aas_learn"
-                weather:showAsAction="never"
-                android:title="@string/mi_more_apps_text"/>
             <item
                 android:id="@+id/mi_credits"
                 android:icon="@drawable/aas_labels"

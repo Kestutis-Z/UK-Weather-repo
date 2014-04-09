@@ -4,37 +4,25 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CityCurrentWeather implements WeatherInformation {
-
-	@SerializedName("clouds")
-	private Clouds clouds;
-
-	@SerializedName("coord")
-	private Coordinates coordinates;
+public class CityThreeHourlyWeatherForecast implements WeatherInformation {
 
 	@SerializedName("dt")
 	private long date;
 
-	@SerializedName("id")
-	private int cityId;
-
 	@SerializedName("main")
 	private NumericParameters numericParameters;
-
-	@SerializedName("name")
-	private String cityName;
-
-	@SerializedName("rain")
-	private Rain rain;
-
-	@SerializedName("sys")
-	private SystemParameters systemParameters;
 
 	@SerializedName("weather")
 	private List<Weather> weather;
 
+	@SerializedName("clouds")
+	private Clouds clouds;
+
 	@SerializedName("wind")
 	private Wind wind;
+
+	@SerializedName("dt_txt")
+	private String dateText;
 
 	@Override
 	public String getDescription() {
@@ -71,16 +59,8 @@ public class CityCurrentWeather implements WeatherInformation {
 		return wind;
 	}
 
-	public int getCityId() {
-		return cityId;
-	}
-
-	public String getCityName() {
-		return cityName;
-	}
-
-	public SystemParameters getSystemParameters() {
-		return systemParameters;
+	public long getDate() {
+		return date;
 	}
 
 }

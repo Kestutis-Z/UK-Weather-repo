@@ -15,16 +15,20 @@ public class Wind {
 		return directionInDegrees;
 	}
 
-	public void setDirectionInDegrees(int directionInDegrees) {
-		this.directionInDegrees = directionInDegrees;
-	}
-
 	public double getSpeedInMilesPerSecond() {
 		return speed;
 	}
 
-	public void setSpeedInMilesPerSecond(double speed) {
+	public double getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(double speed) {
 		this.speed = speed;
+	}
+
+	public void setDirectionInDegrees(int directionInDegrees) {
+		this.directionInDegrees = directionInDegrees;
 	}
 
 	public int getCardinalDirectionStringResource() {

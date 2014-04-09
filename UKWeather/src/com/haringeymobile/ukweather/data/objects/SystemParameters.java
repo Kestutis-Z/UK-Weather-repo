@@ -11,8 +11,4 @@ public class SystemParameters {
 		return country;
 	}
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
 }

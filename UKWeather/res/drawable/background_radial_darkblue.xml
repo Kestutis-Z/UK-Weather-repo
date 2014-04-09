@@ -6,7 +6,7 @@
         android:angle="@integer/background_shape_gradient_angle"
         android:centerColor="@color/darkblue2"
         android:endColor="@color/darkblue3"
-        android:gradientRadius="600"
+        android:gradientRadius="750"
         android:startColor="@color/darkblue1"
         android:type="radial" />
 

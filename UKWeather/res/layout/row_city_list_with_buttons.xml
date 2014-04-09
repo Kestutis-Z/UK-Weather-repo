@@ -23,7 +23,7 @@
             android:layout_margin="@dimen/gap_small"
             android:layout_weight="1"
             android:contentDescription="@string/icon_content_description_remove_city"
-            android:src="@drawable/as_discard" >
+            android:src="@drawable/discard" >
         </ImageButton>
 
         <ImageButton
@@ -32,16 +32,24 @@
             android:layout_margin="@dimen/gap_small"
             android:layout_weight="2"
             android:contentDescription="@string/icon_content_description_current_weather_conditions"
-            android:src="@drawable/aas_replay" >
+            android:src="@drawable/refresh" >
         </ImageButton>
 
         <ImageButton
-            android:id="@+id/city_weather_forecast_button"
+            android:id="@+id/city_daily_weather_forecast_button"
             style="@style/CityWeatherImageButton"
             android:layout_margin="@dimen/gap_small"
             android:layout_weight="2"
             android:contentDescription="@string/icon_content_description_weather_forecast"
-            android:src="@drawable/as_forward" >
+            android:src="@drawable/forecast_daily" >
+        </ImageButton>
+        <ImageButton
+            android:id="@+id/city_three_hourly_weather_forecast_button"
+            style="@style/CityWeatherImageButton"
+            android:layout_margin="@dimen/gap_small"
+            android:layout_weight="2"
+            android:contentDescription="@string/icon_content_description_weather_forecast"
+            android:src="@drawable/forecast_three_hourly" >
         </ImageButton>
     </LinearLayout>
 

@@ -1,9 +1,6 @@
 package com.haringeymobile.ukweather.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public enum InitialCity implements Parcelable {
+public enum InitialCity {
 
 	LONDON(2643743, "London"),
 
@@ -41,35 +38,6 @@ public enum InitialCity implements Parcelable {
 
 	public String getDisplayName() {
 		return displayName;
-	}
-
-	public static final Parcelable.Creator<InitialCity> CREATOR = new Parcelable.Creator<InitialCity>() {
-
-		@Override
-		public InitialCity createFromParcel(Parcel in) {
-			InitialCity city;
-			try {
-				city = valueOf(in.readString());
-			} catch (IllegalArgumentException ex) {
-				city = null;
-			}
-			return city;
-		}
-
-		@Override
-		public InitialCity[] newArray(int size) {
-			return new InitialCity[size];
-		}
-	};
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(this == null ? "" : name());
 	}
 
 }

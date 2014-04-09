@@ -18,9 +18,11 @@ public class CitySearchResultsDialog extends DialogFragment {
 
 	public interface OnCityNamesListItemClickedListener {
 
-		void onItemClicked(int position);
+		void onFoundCityNamesItemClicked(int position);
 
 	}
+
+	static final String CITY_NAME_LIST = "city names";
 
 	private OnCityNamesListItemClickedListener listener;
 	private ListView listView;
@@ -29,7 +31,7 @@ public class CitySearchResultsDialog extends DialogFragment {
 	static CitySearchResultsDialog newInstance(ArrayList<String> cityNames) {
 		CitySearchResultsDialog dialog = new CitySearchResultsDialog();
 		Bundle args = new Bundle();
-		args.putStringArrayList(MainActivity.CITY_LIST, cityNames);
+		args.putStringArrayList(CITY_NAME_LIST, cityNames);
 		dialog.setArguments(args);
 		return dialog;
 	}
@@ -57,10 +59,10 @@ public class CitySearchResultsDialog extends DialogFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				listener.onItemClicked(position);
+				listener.onFoundCityNamesItemClicked(position);
 				CitySearchResultsDialog.this.dismiss();
 			}
-			
+
 		});
 
 		getDialog().setTitle(R.string.dialog_title_search_results);
@@ -73,7 +75,7 @@ public class CitySearchResultsDialog extends DialogFragment {
 		if (arrayAdapter == null) {
 			Bundle args = getArguments();
 			ArrayList<String> cityNames = args
-					.getStringArrayList(MainActivity.CITY_LIST);
+					.getStringArrayList(CITY_NAME_LIST);
 			arrayAdapter = new CityNameArrayAdapter(getActivity(),
 					R.layout.row_city_list, cityNames);
 		}

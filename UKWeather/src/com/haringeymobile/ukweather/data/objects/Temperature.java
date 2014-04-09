@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Temperature {
 
+	static final double DIFFERENCE_BETWEEN_KELVIN_AND_CELCIUS = 273.15;
+
 	@SerializedName("day")
 	private double dayTemperature;
 
@@ -23,51 +25,19 @@ public class Temperature {
 	private double minTemperature;
 
 	public double getDayTemperature() {
-		return dayTemperature;
-	}
-
-	public void setDayTemperature(double dayTemperature) {
-		this.dayTemperature = dayTemperature;
+		return dayTemperature - DIFFERENCE_BETWEEN_KELVIN_AND_CELCIUS;
 	}
 
 	public double getEveningTemperature() {
-		return eveningTemperature;
-	}
-
-	public void setEveningTemperature(double eveningTemperature) {
-		this.eveningTemperature = eveningTemperature;
+		return eveningTemperature - DIFFERENCE_BETWEEN_KELVIN_AND_CELCIUS;
 	}
 
 	public double getMorningTemperature() {
-		return morningTemperature;
-	}
-
-	public void setMorningTemperature(double morningTemperature) {
-		this.morningTemperature = morningTemperature;
+		return morningTemperature - DIFFERENCE_BETWEEN_KELVIN_AND_CELCIUS;
 	}
 
 	public double getNightTemperature() {
-		return nightTemperature;
-	}
-
-	public void setNightTemperature(double nightTemperature) {
-		this.nightTemperature = nightTemperature;
-	}
-
-	public double getMaxTemperature() {
-		return maxTemperature;
-	}
-
-	public void setMaxTemperature(double maxTemperature) {
-		this.maxTemperature = maxTemperature;
-	}
-
-	public double getMinTemperature() {
-		return minTemperature;
-	}
-
-	public void setMinTemperature(double minTemperature) {
-		this.minTemperature = minTemperature;
+		return nightTemperature - DIFFERENCE_BETWEEN_KELVIN_AND_CELCIUS;
 	}
 
 }

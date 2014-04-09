@@ -8,6 +8,6 @@ public interface JsonParsingFromUrlStrategy {
 	public static final int TIMEOUT = 4500;
 	public static final String GET = "GET";
 
-	public abstract String retrieveJSONString(URL url);
+	public abstract String parseJsonString(URL url);
 
 }
