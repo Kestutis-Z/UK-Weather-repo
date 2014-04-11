@@ -23,18 +23,15 @@ import com.google.gson.Gson;
 import com.haringeymobile.ukweather.data.OpenWeatherMapUrl;
 import com.haringeymobile.ukweather.data.objects.CityCurrentWeather;
 import com.haringeymobile.ukweather.data.objects.SearchResponseForFindQuery;
-import com.haringeymobile.ukweather.database.CityTable;
 import com.haringeymobile.ukweather.database.GeneralDatabaseService;
 import com.haringeymobile.ukweather.database.SqlOperation;
-import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 
 public class MainActivity extends ActionBarActivity implements
-		CityListFragment.OnCitySelectedListener,
+		CityListFragmentWithWeatherButtons.Listener,
 		GetAvailableCitiesTask.Listener,
 		CitySearchResultsDialog.OnCityNamesListItemClickedListener,
-		DeleteCityDialog.Listener, WorkerFragmentToRetrieveJsonString.Listener {
+		WorkerFragmentToRetrieveJsonString.Listener {
 
-	public static final String CITY_ID = "city id";
 	public static final String WEATHER_INFORMATION_TYPE = "weather info type";
 	public static final String WEATHER_INFO_JSON_STRING = "json string";
 
@@ -73,7 +70,7 @@ public class MainActivity extends ActionBarActivity implements
 		Fragment cityListFragment = fragmentManager
 				.findFragmentByTag(LIST_FRAGMENT_TAG);
 		if (cityListFragment == null) {
-			cityListFragment = new CityListFragment();
+			cityListFragment = new CityListFragmentWithWeatherButtons();
 			fragmentTransaction.add(R.id.city_list_container, cityListFragment,
 					LIST_FRAGMENT_TAG);
 		}
@@ -154,7 +151,10 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (id == R.id.mi_search) {
+		if (id == R.id.mi_city_management) {
+			Intent cityManagementIntent = new Intent(this,
+					CityManagementActivity.class);
+			startActivity(cityManagementIntent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -164,35 +164,6 @@ public class MainActivity extends ActionBarActivity implements
 	public void onSearchResponseForFindQueryRetrieved(
 			SearchResponseForFindQuery searchResponseForFindQuery) {
 		this.searchResponseForFindQuery = searchResponseForFindQuery;
-	}
-
-	@Override
-	public void onCityRecordDeletionRequested(int cityId, String cityName) {
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		DeleteCityDialog dialogFragment = (DeleteCityDialog) fragmentManager
-				.findFragmentByTag(GetAvailableCitiesTask.CITY_DELETE_DIALOG_FRAGMENT_TAG);
-		if (dialogFragment == null) {
-			dialogFragment = DeleteCityDialog.newInstance(cityId, cityName);
-			dialogFragment.show(fragmentManager,
-					GetAvailableCitiesTask.CITY_DELETE_DIALOG_FRAGMENT_TAG);
-		}
-	}
-
-	@Override
-	public void onCityRecordDeletionConfirmed(int cityId) {
-		int lastCityId = SharedPrefsHelper.getCityIdFromSharedPrefs(this);
-		if (cityId == lastCityId) {
-			SharedPrefsHelper.putCityIdIntoSharedPrefs(this,
-					CityTable.CITY_ID_DOES_NOT_EXIST);
-		}
-		removeCity(cityId);
-	}
-
-	private void removeCity(int cityId) {
-		Intent intent = new Intent(this, GeneralDatabaseService.class);
-		intent.setAction(GeneralDatabaseService.ACTION_DELETE_CITY_RECORDS);
-		intent.putExtra(CITY_ID, cityId);
-		startService(intent);
 	}
 
 	@Override

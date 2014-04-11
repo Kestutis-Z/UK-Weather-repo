@@ -14,10 +14,15 @@
         weather:showAsAction="always">
         <menu>
             <item
+                android:id="@+id/mi_city_management"
+                android:icon="@drawable/colosseum"
+                android:title="@string/mi_city_management_title"
+                weather:showAsAction="never"/>
+            <!-- <item
                 android:id="@+id/mi_settings"
                 android:icon="@drawable/settings"
                 android:title="@string/mi_settings_title"
-                weather:showAsAction="never"/>
+                weather:showAsAction="never"/> -->
             <!--
             <item
                 android:id="@+id/mi_rate_application"

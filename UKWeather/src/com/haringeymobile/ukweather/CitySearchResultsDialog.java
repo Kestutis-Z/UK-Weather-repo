@@ -130,9 +130,9 @@ public class CitySearchResultsDialog extends DialogFragment {
 			holder.cityNameTextView.setText(cityName);
 
 			if (position % 2 == 1) {
-				rowView.setBackgroundResource(CityListFragment.BACKGROUND_RESOURCE_ODD);
+				rowView.setBackgroundResource(CityListFragmentWithWeatherButtons.BACKGROUND_RESOURCE_ODD);
 			} else {
-				rowView.setBackgroundResource(CityListFragment.BACKGROUND_RESOURCE_EVEN);
+				rowView.setBackgroundResource(CityListFragmentWithWeatherButtons.BACKGROUND_RESOURCE_EVEN);
 			}
 
 			return rowView;

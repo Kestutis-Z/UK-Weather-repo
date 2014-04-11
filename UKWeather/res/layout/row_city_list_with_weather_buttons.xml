@@ -18,19 +18,10 @@
         android:orientation="horizontal" >
 
         <ImageButton
-            android:id="@+id/city_delete_button"
-            style="@style/CityWeatherImageButton"
-            android:layout_margin="@dimen/gap_small"
-            android:layout_weight="1"
-            android:contentDescription="@string/icon_content_description_remove_city"
-            android:src="@drawable/discard" >
-        </ImageButton>
-
-        <ImageButton
             android:id="@+id/city_current_weather_button"
             style="@style/CityWeatherImageButton"
             android:layout_margin="@dimen/gap_small"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:contentDescription="@string/icon_content_description_current_weather_conditions"
             android:src="@drawable/refresh" >
         </ImageButton>
@@ -39,15 +30,16 @@
             android:id="@+id/city_daily_weather_forecast_button"
             style="@style/CityWeatherImageButton"
             android:layout_margin="@dimen/gap_small"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:contentDescription="@string/icon_content_description_weather_forecast"
             android:src="@drawable/forecast_daily" >
         </ImageButton>
+
         <ImageButton
             android:id="@+id/city_three_hourly_weather_forecast_button"
             style="@style/CityWeatherImageButton"
             android:layout_margin="@dimen/gap_small"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:contentDescription="@string/icon_content_description_weather_forecast"
             android:src="@drawable/forecast_three_hourly" >
         </ImageButton>

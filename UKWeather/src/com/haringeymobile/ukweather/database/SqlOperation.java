@@ -20,6 +20,10 @@ public class SqlOperation {
 	private String columnNameForJsonString;
 	private String columnNameForLastQueryTime;
 
+	public SqlOperation(Context context) {
+		this.context = context;
+	}
+
 	public SqlOperation(Context context, WeatherInfoType weatherInfoType) {
 		this.context = context;
 		switch (weatherInfoType) {
@@ -194,6 +198,15 @@ public class SqlOperation {
 	public void deleteCity(int cityId) {
 		context.getContentResolver().delete(
 				WeatherContentProvider.CONTENT_URI_CITY_RECORDS,
+				CityTable.COLUMN_CITY_ID + "=?",
+				new String[] { Integer.toString(cityId) });
+	}
+
+	public void renameCity(int cityId, String newName) {
+		ContentValues newValues = new ContentValues();
+		newValues.put(CityTable.COLUMN_NAME, newName);
+		context.getContentResolver().update(
+				WeatherContentProvider.CONTENT_URI_CITY_RECORDS, newValues,
 				CityTable.COLUMN_CITY_ID + "=?",
 				new String[] { Integer.toString(cityId) });
 	}

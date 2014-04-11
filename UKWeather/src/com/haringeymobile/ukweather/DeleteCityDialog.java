@@ -24,7 +24,7 @@ public class DeleteCityDialog extends DialogFragment {
 	public static DeleteCityDialog newInstance(int cityId, String cityName) {
 		DeleteCityDialog dialogFragment = new DeleteCityDialog();
 		Bundle b = new Bundle();
-		b.putInt(MainActivity.CITY_ID, cityId);
+		b.putInt(CityManagementActivity.CITY_ID, cityId);
 		b.putString(CITY_NAME, cityName);
 		dialogFragment.setArguments(b);
 		return dialogFragment;
@@ -65,7 +65,7 @@ public class DeleteCityDialog extends DialogFragment {
 									int whichButton) {
 								callbackToParentActivity
 										.onCityRecordDeletionConfirmed(getArguments()
-												.getInt(MainActivity.CITY_ID));
+												.getInt(CityManagementActivity.CITY_ID));
 							}
 						}).create();
 	}

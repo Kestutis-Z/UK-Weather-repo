@@ -6,6 +6,7 @@
     <string name="weather_info_frame_layout_pane_number_tag">single_pane</string>
     <string name="weather_info_activity_name">Weather Information</string>
     <string name="weather_forecast_activity_name">Weather Forecast</string>
+    <string name="city_management_activity_name">City Management</string>
    
     <string name="weather_info_city">City</string>
     <string name="weather_info_longitude">Longitude</string>
@@ -25,8 +26,9 @@
      <string name="weather_info_type_label_daily_forecast">14 day forecast</string>
      <string name="weather_info_type_label_three_hourly_forecast">3-hourly forecast</string>
     
-    <string name="icon_content_description_weather_conditions">Weather icon</string>
-    <string name="icon_content_description_remove_city">Remove city icon</string>
+    <string name="icon_content_description_weather_conditions">Weather</string>
+    <string name="icon_content_description_remove_city">Remove city</string>
+    <string name="icon_content_description_rename_city">Rename city</string>
     <string name="icon_content_description_current_weather_conditions">Current weather conditions</string>
     <string name="icon_content_description_weather_forecast">Weather forecast</string>
     
@@ -39,12 +41,15 @@
     <string name="dialog_title_search_results">Search results. Choose a city</string>
     <string name="dialog_title_delete_city_part_1">Delete</string>
     <string name="dialog_title_delete_city_part_2">and all associated records?</string>
+    <string name="dialog_title_rename_city_part_1">"Please enter a new name for "</string>
+    <string name="dialog_title_rename_city_part_2">:</string>
+	<string name="message_enter_city_name">The name cannot be empty!</string>
     
     <string name="mi_search_title">Search</string>
     <string name="mi_submenu_title">Extras</string>
+    <string name="mi_city_management_title">@string/city_management_activity_name</string>  
     <string name="mi_settings_title">Settings</string>
     <string name="mi_rate_application_title">Rate application!</string>
-    <string name="mi_more_apps_title">More apps!</string>  
     <string name="mi_about_program_title">About</string>
     
     <string name="direction_n">North</string>
