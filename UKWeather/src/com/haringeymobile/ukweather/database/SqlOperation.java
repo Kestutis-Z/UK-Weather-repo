@@ -5,16 +5,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 
+import com.haringeymobile.ukweather.R;
+import com.haringeymobile.ukweather.SettingsActivityPreHoneycomb;
 import com.haringeymobile.ukweather.WeatherInfoType;
 
 public class SqlOperation {
-
-	/**
-	 * Time period for which the weather data is considered "fresh". By default
-	 * it is 10 minutes
-	 */
-	private static final int WEATHER_DATA_STORAGE_TIME = 10;
 
 	private Context context;
 	private String columnNameForJsonString;
@@ -186,13 +183,18 @@ public class SqlOperation {
 			return true;
 		} else {
 			long currentTime = System.currentTimeMillis();
-			return currentTime - lastUpdateTime > getWeatherDataStorageLimit();
+			return currentTime - lastUpdateTime > getWeatherDataCachePeriod();
 		}
 	}
 
-	private long getWeatherDataStorageLimit() {
-		// TODO Let user choose the limit
-		return WEATHER_DATA_STORAGE_TIME * 60 * 1000;
+	private long getWeatherDataCachePeriod() {
+		String minutesString = PreferenceManager.getDefaultSharedPreferences(
+				context).getString(
+				SettingsActivityPreHoneycomb.PREF_DATA_CACHE_PERIOD,
+				context.getResources().getString(
+						R.string.pref_data_cache_period_default));
+		int minutes = Integer.parseInt(minutesString);
+		return minutes * 60 * 1000;
 	}
 
 	public void deleteCity(int cityId) {

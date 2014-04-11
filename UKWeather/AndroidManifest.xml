@@ -36,6 +36,16 @@
             android:label="@string/city_management_activity_name"
             android:theme="@style/Theme.AppCompat" >
         </activity>
+        <activity
+            android:name="com.haringeymobile.ukweather.SettingsActivityPreHoneycomb"
+            android:icon="@drawable/settings"
+            android:label="@string/mi_settings_title" >
+        </activity>
+        <activity
+            android:name="com.haringeymobile.ukweather.SettingsActivity"
+            android:icon="@drawable/settings"
+            android:label="@string/mi_settings_title" >
+        </activity>
 
         <provider
             android:name="com.haringeymobile.ukweather.database.WeatherContentProvider"

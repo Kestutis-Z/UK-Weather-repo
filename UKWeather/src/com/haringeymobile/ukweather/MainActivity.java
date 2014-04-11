@@ -25,6 +25,7 @@ import com.haringeymobile.ukweather.data.objects.CityCurrentWeather;
 import com.haringeymobile.ukweather.data.objects.SearchResponseForFindQuery;
 import com.haringeymobile.ukweather.database.GeneralDatabaseService;
 import com.haringeymobile.ukweather.database.SqlOperation;
+import com.haringeymobile.ukweather.utils.GlobalConstants;
 
 public class MainActivity extends ActionBarActivity implements
 		CityListFragmentWithWeatherButtons.Listener,
@@ -155,7 +156,12 @@ public class MainActivity extends ActionBarActivity implements
 			Intent cityManagementIntent = new Intent(this,
 					CityManagementActivity.class);
 			startActivity(cityManagementIntent);
-			return true;
+		} else if (id == R.id.mi_settings) {
+			@SuppressWarnings("rawtypes")
+			Class c = GlobalConstants.IS_BUILD_VERSION_AT_LEAST_HONEYCOMB_11 ? SettingsActivity.class
+					: SettingsActivityPreHoneycomb.class;
+			Intent settingsIntent = new Intent(this, c);
+			startActivity(settingsIntent);
 		}
 		return super.onOptionsItemSelected(item);
 	}

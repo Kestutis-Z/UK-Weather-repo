@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +23,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.haringeymobile.ukweather.WeatherInfoType.IllegalWeatherInfoTypeArgumentException;
+import com.haringeymobile.ukweather.data.objects.Temperature.TemperatureScale;
 import com.haringeymobile.ukweather.data.objects.Weather;
 import com.haringeymobile.ukweather.data.objects.WeatherInformation;
 import com.haringeymobile.ukweather.data.objects.Wind;
+import com.haringeymobile.ukweather.data.objects.Wind.WindSpeedMeasurementUnit;
 import com.haringeymobile.ukweather.utils.MiscMethods;
 
 public abstract class WeatherInfoFragment extends Fragment {
@@ -123,10 +127,23 @@ public abstract class WeatherInfoFragment extends Fragment {
 	}
 
 	private void displayTemperatureText(WeatherInformation weatherInformation) {
+		TemperatureScale temperatureScale = getTemperatureScale();
 		String temperatureInfo = MiscMethods
-				.formatDoubleValue(weatherInformation.getDayTemperature())
-				+ res.getString(R.string.weather_info_degree_celcius);
+				.formatDoubleValue(weatherInformation
+						.getDayTemperature(temperatureScale))
+				+ res.getString(temperatureScale.getDisplayResourceId());
 		temperatureTextView.setText(temperatureInfo);
+	}
+
+	protected TemperatureScale getTemperatureScale() {
+		Context context = getActivity();
+		String temperatureScaleIdString = PreferenceManager
+				.getDefaultSharedPreferences(context).getString(
+						SettingsActivityPreHoneycomb.PREF_TEMPERATURE_SCALE,
+						context.getResources().getString(
+								R.string.pref_temperature_scale_id_default));
+		int temperatureScaleId = Integer.parseInt(temperatureScaleIdString);
+		return TemperatureScale.getTemperatureScaleById(temperatureScaleId);
 	}
 
 	private void displayAtmosphericPressureText(
@@ -148,9 +165,13 @@ public abstract class WeatherInfoFragment extends Fragment {
 
 	private void displayWindInfo(WeatherInformation weatherInformation) {
 		Wind wind = weatherInformation.getWind();
+		WindSpeedMeasurementUnit windSpeedMeasurementUnit = getWindSpeedMeasurementUnit();
 		String windInfo = res.getString(R.string.weather_info_wind_speed)
-				+ SEPARATOR + wind.getSpeedInMilesPerSecond() + " "
-				+ res.getString(R.string.miles_per_second);
+				+ SEPARATOR
+				+ MiscMethods.formatDoubleValue(wind
+						.getSpeed(windSpeedMeasurementUnit))
+				+ " "
+				+ res.getString(windSpeedMeasurementUnit.getDisplayResourceId());
 		windInfo += "\n" + res.getString(R.string.weather_info_wind_direction)
 				+ SEPARATOR + wind.getDirectionInDegrees()
 				+ res.getString(R.string.weather_info_degree);
@@ -158,6 +179,20 @@ public abstract class WeatherInfoFragment extends Fragment {
 				+ res.getString(wind.getCardinalDirectionStringResource())
 				+ ")";
 		windTextView.setText(windInfo);
+	}
+
+	private WindSpeedMeasurementUnit getWindSpeedMeasurementUnit() {
+		Context context = getActivity();
+		String windSpeedMeasurementUnitIdString = PreferenceManager
+				.getDefaultSharedPreferences(context)
+				.getString(
+						SettingsActivityPreHoneycomb.PREF_WIND_SPEED_MEASUREMENT_UNIT,
+						context.getResources().getString(
+								R.string.pref_wind_speed_unit_id_default));
+		int windSpeedMeasurementUnitId = Integer
+				.parseInt(windSpeedMeasurementUnitIdString);
+		return WindSpeedMeasurementUnit
+				.getWindSpeedMeasurementUnitById(windSpeedMeasurementUnitId);
 	}
 
 	private class SetIconDrawableTask extends AsyncTask<String, Void, Drawable> {

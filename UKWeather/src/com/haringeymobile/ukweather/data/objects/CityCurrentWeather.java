@@ -3,6 +3,7 @@ package com.haringeymobile.ukweather.data.objects;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
+import com.haringeymobile.ukweather.data.objects.Temperature.TemperatureScale;
 
 public class CityCurrentWeather implements WeatherInformation {
 
@@ -52,8 +53,8 @@ public class CityCurrentWeather implements WeatherInformation {
 	}
 
 	@Override
-	public double getDayTemperature() {
-		return numericParameters.getTemperature();
+	public double getDayTemperature(TemperatureScale temperatureScale) {
+		return numericParameters.getTemperature(temperatureScale);
 	}
 
 	@Override

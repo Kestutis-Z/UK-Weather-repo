@@ -20,6 +20,9 @@
     <string name="weather_info_atmospheric_pressure">Pressure</string>
     <string name="weather_info_humidity">Humidity</string>
     <string name="weather_info_wind_speed">Wind speed</string>
+    <string name="weather_info_wind_speed_unit_meters_per_second">mps</string>
+    <string name="weather_info_wind_speed_unit_kilometers_per_hour">kph</string>
+    <string name="weather_info_wind_speed_unit_miles_per_hour">mph</string>
     <string name="weather_info_wind_direction">Wind direction</string>
     
      <string name="weather_info_type_label_current_weather">Current weather</string>

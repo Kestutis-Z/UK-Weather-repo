@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.haringeymobile.ukweather.data.objects.CityDailyWeatherForecast;
 import com.haringeymobile.ukweather.data.objects.Temperature;
 import com.haringeymobile.ukweather.data.objects.WeatherInformation;
+import com.haringeymobile.ukweather.data.objects.Temperature.TemperatureScale;
 import com.haringeymobile.ukweather.utils.MiscMethods;
 
 public class WeatherDailyWeatherForecastChildFragment extends
@@ -57,17 +58,23 @@ public class WeatherDailyWeatherForecastChildFragment extends
 
 	private void displayTemperatureText(
 			CityDailyWeatherForecast weatherInformation) {
-		String degree = res.getString(R.string.weather_info_degree_celcius);
+
 		CityDailyWeatherForecast weatherForecast = (CityDailyWeatherForecast) weatherInformation;
 		Temperature temperature = weatherForecast.getTemperature();
+		TemperatureScale temperatureScale = getTemperatureScale();
+		String temperatureScaleDegree = res.getString(temperatureScale
+				.getDisplayResourceId());
 		String temperatureInfo = MiscMethods.formatDoubleValue(temperature
-				.getNightTemperature()) + degree;
+				.getNightTemperature(temperatureScale))
+				+ temperatureScaleDegree;
 		temperatureInfo += "\n"
 				+ MiscMethods.formatDoubleValue(temperature
-						.getMorningTemperature()) + degree;
+						.getMorningTemperature(temperatureScale))
+				+ temperatureScaleDegree;
 		temperatureInfo += "\n"
 				+ MiscMethods.formatDoubleValue(temperature
-						.getEveningTemperature()) + degree;
+						.getEveningTemperature(temperatureScale))
+				+ temperatureScaleDegree;
 		extraTemperaturesTextView.setText(temperatureInfo);
 	}
 

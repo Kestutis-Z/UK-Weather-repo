@@ -1,6 +1,7 @@
 package com.haringeymobile.ukweather.data.objects;
 
 import com.google.gson.annotations.SerializedName;
+import com.haringeymobile.ukweather.data.objects.Temperature.TemperatureScale;
 
 public class NumericParameters {
 
@@ -27,8 +28,8 @@ public class NumericParameters {
 		return pressure;
 	}
 
-	public double getTemperature() {
-		return temperature - Temperature.DIFFERENCE_BETWEEN_KELVIN_AND_CELCIUS;
+	public double getTemperature(TemperatureScale temperatureScale) {
+		return temperatureScale.convertTemperature(temperature);
 	}
 
 }
