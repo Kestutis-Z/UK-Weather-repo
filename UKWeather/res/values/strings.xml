@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">UK Weather</string>
+    <string name="app_name">World Weather</string>
     <string name="action_settings">Settings</string>
     <string name="weather_info_frame_layout_pane_number_tag">single_pane</string>
     <string name="weather_info_activity_name">Weather Information</string>

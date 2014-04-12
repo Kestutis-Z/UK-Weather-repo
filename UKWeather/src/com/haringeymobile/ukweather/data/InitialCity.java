@@ -4,23 +4,25 @@ public enum InitialCity {
 
 	LONDON(2643743, "London"),
 
-	BIRMINGHAM(2655603, "Birmingham"),
+	MEXICO_CITY(3530597, "Mexico City"),
 
-	LEEDS(2644688, "Leeds"),
+	RIO_DE_JANEIRO(3451190, "Rio de Janeiro"),
 
-	GLASGOW(2648579, "Glasgow"),
+	CAIRO(360630, "Cairo"),
 
-	SHEFFIELD(2638077, "Sheffield"),
+	MOSCOW(524901, "Moscow"),
 
-	BRADFORD(2654993, "Bradford"),
+	SEOUL(1835848, "Seoul"),
 
-	EDINBURGH(2650225, "Edinburgh"),
+	BEIJING(1816670, "Beijing"),
 
-	LIVERPOOL(2644210, "Liverpool"),
+	LOS_ANGELES(5368361, "Los Angeles"),
 
-	MANCHESTER(2643123, "Manchester"),
+	ISTANBUL(745044, "Istanbul"),
 
-	BRISTOL(2654675, "Bristol"),
+	TOKYO(1850147, "Tokyo"),
+	
+	KOLKATA(1275004, "Kolkata"),
 
 	;
 
