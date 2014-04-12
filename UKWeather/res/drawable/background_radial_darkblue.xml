@@ -10,4 +10,12 @@
         android:startColor="@color/darkblue1"
         android:type="radial" />
 
+    <padding
+        android:bottom="@dimen/gap_small"
+        android:left="@dimen/gap_medium"
+        android:right="@dimen/gap_medium"
+        android:top="@dimen/gap_small" />
+
+    <corners android:radius="@dimen/shape_corners_radius" />
+
 </shape>

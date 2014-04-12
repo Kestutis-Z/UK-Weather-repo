@@ -25,9 +25,9 @@
     <string name="weather_info_wind_speed_unit_miles_per_hour">mph</string>
     <string name="weather_info_wind_direction">Wind direction</string>
     
-     <string name="weather_info_type_label_current_weather">Current weather</string>
-     <string name="weather_info_type_label_daily_forecast">14 day forecast</string>
-     <string name="weather_info_type_label_three_hourly_forecast">3-hourly forecast</string>
+    <string name="weather_info_type_label_current_weather">Current weather</string>
+    <string name="weather_info_type_label_daily_forecast">14 day forecast</string>
+    <string name="weather_info_type_label_three_hourly_forecast">3-hourly forecast</string>
     
     <string name="icon_content_description_weather_conditions">Weather</string>
     <string name="icon_content_description_remove_city">Remove city</string>
@@ -75,8 +75,8 @@
     <string name="miles_per_second">mps</string>
     <string name="night_morning_evening">Night:\nMorning:\nEvening:</string>
     
-    <string name="about_text_part_1">"\nVersion 1.0\n\u00A9 2014 Haringey Mobile\n\nPlease contact us if you have feature requests or complaints:\n\nharingeymobile@gmail.com\n"</string>
-    <string name="about_text_part_2">"\nCREDITS and LICENSES:\n\n(1) OpenWeatherMap - free weather data and forecast API\nhttp://openweathermap.org/\n\nAll data are provided under the CC-BY-SA 2.0:\nhttp://creativecommons.org/licenses/by-sa/2.0/\n\n(2) Android Asset Studio - a set of icon generators and other tools\nhttp://android-ui-utils.googlecode.com/hg/asset-studio/dist/index.html\n\nCreative Commons 3.0 BY license for Android Asset Studio content:\nhttp://creativecommons.org/licenses/by/3.0/legalcode\n\n(3) PagerSlidingTabStrip - an interactive indicator to navigate between the different pages of a ViewPager\nhttps://github.com/astuetz/PagerSlidingTabStrip\n\nCopyright 2013 Andreas Stuetz\nApache license for PagerSlidingTabStrip:\nhttp://www.apache.org/licenses/LICENSE-2.0\n\n(4) Thermometer icon\nhttps://www.iconfinder.com/icons/183499/full_quarter_thermometer_three_icon#size=256\n\nAuthor - www.yanlu.de\nLicense: Free for commercial use\n\n(5) Wind icon\n\nArtist: Aha-Soft Team\nLicense: Free for non-commercial use. Commercial usage: Not allowed\nhttp://www.iconarchive.com/icons/large-icons/large-weather/license.txt\n\n"</string>
+    <string name="about_text_part_1">"Version 1.0\n\u00A9 2014 Haringey Mobile\n\nPlease contact us if you have feature requests or complaints:\n\nharingeymobile@gmail.com\n"</string>
+    <string name="about_text_part_2">"\nCREDITS and LICENSES:\n\n(1) OpenWeatherMap - free weather data and forecast API\nhttp://openweathermap.org/\n\nAll data are provided under the CC-BY-SA 2.0:\nhttp://creativecommons.org/licenses/by-sa/2.0/\n\n(2) Android Asset Studio - a set of icon generators and other tools\nhttp://android-ui-utils.googlecode.com/hg/asset-studio/dist/index.html\n\nCreative Commons 3.0 BY license for Android Asset Studio content:\nhttp://creativecommons.org/licenses/by/3.0/legalcode\n\n(3) PagerSlidingTabStrip - an interactive indicator to navigate between the different pages of a ViewPager\nhttps://github.com/astuetz/PagerSlidingTabStrip\n\nCopyright 2013 Andreas Stuetz\nApache license for PagerSlidingTabStrip:\nhttp://www.apache.org/licenses/LICENSE-2.0\n\n(4) Thermometer icon\nhttps://www.iconfinder.com/icons/183499/full_quarter_thermometer_three_icon#size=256\n\nAuthor - www.yanlu.de\nLicense: Free for commercial use\n\n(5) Wind icon\n\nArtist: Aha-Soft Team\nLicense: Free for non-commercial use. Commercial usage: Not allowed\nhttp://www.iconarchive.com/icons/large-icons/large-weather/license.txt\n"</string>
    
     
 </resources>

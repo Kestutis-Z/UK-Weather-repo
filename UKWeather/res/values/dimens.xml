@@ -1,22 +1,21 @@
 <resources>
 
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin">4dp</dimen>
+    <dimen name="activity_vertical_margin">4dp</dimen>
     
-    <dimen name="gap_small">4dp</dimen>
-    <dimen name="gap_medium">10dp</dimen>
-    <dimen name="gap_large">15dp</dimen>
+    <dimen name="gap_small">3dp</dimen>
+    <dimen name="gap_medium">5dp</dimen>
+    <dimen name="gap_large">8dp</dimen>
     
-    <dimen name="padding_small">3dp</dimen>
-    <dimen name="padding_medium">6dp</dimen>
-    <dimen name="padding_large">10dp</dimen>
-    <dimen name="padding_very_large">15dp</dimen>
+    <dimen name="padding_small">2dp</dimen>
+    <dimen name="padding_medium">4dp</dimen>
+    <dimen name="padding_large">6dp</dimen>
+    <dimen name="padding_very_large">8dp</dimen>
     
-    <dimen name="text_size_small">13dp</dimen>
-    <dimen name="text_size_medium">20dp</dimen>
-    <dimen name="text_size_large">29dp</dimen>
-    <dimen name="text_size_very_large">43dp</dimen>
+    <dimen name="text_size_small">12dp</dimen>
+    <dimen name="text_size_medium">15dp</dimen>
+    <dimen name="text_size_large">20dp</dimen>
+    <dimen name="text_size_very_large">30dp</dimen>
     
     <dimen name="list_divider_height">4dp</dimen>
     
@@ -24,8 +23,8 @@
     
     <dimen name="shape_stroke_width">5dp</dimen>
     <dimen name="shape_corners_radius">4dp</dimen>
-    <dimen name="shape_padding">5dp</dimen>
+    <dimen name="shape_padding">3dp</dimen>
     
-    <dimen name="small_view_width">71dp</dimen>
+    <dimen name="small_view_width">70dp</dimen>
 
 </resources>
