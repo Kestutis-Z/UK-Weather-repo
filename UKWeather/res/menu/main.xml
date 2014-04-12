@@ -2,7 +2,7 @@
     xmlns:weather="http://schemas.android.com/apk/res-auto" >
 
     <item
-        android:id="@+id/mi_search"
+        android:id="@+id/mi_search_cities"
         android:icon="@drawable/search"
         android:title="@string/mi_search_title"
         weather:actionViewClass="android.support.v7.widget.SearchView"
@@ -23,18 +23,16 @@
                 android:icon="@drawable/settings"
                 android:title="@string/mi_settings_title"
                 weather:showAsAction="never"/>
-            <!--
             <item
                 android:id="@+id/mi_rate_application"
-                android:icon="@drawable/aas_rating"
-                weather:showAsAction="never"
-                android:title="@string/mi_rate_application"/>
+                android:icon="@drawable/star"
+                android:title="@string/mi_rate_application_title"
+                weather:showAsAction="never"/>
             <item
-                android:id="@+id/mi_credits"
-                android:icon="@drawable/aas_labels"
-                weather:showAsAction="never"
-                android:title="@string/mi_about_program_text"/>
-            -->
+                android:id="@+id/mi_about"
+                android:icon="@drawable/about"
+                android:title="@string/mi_about_program_title"
+                weather:showAsAction="never"/>
         </menu>
     </item>
 

@@ -6,6 +6,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
@@ -91,7 +92,7 @@ public class MainActivity extends ActionBarActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 
-		MenuItem searchItem = menu.findItem(R.id.mi_search);
+		MenuItem searchItem = menu.findItem(R.id.mi_search_cities);
 		SearchView searchView = (SearchView) MenuItemCompat
 				.getActionView(searchItem);
 
@@ -162,8 +163,25 @@ public class MainActivity extends ActionBarActivity implements
 					: SettingsActivityPreHoneycomb.class;
 			Intent settingsIntent = new Intent(this, c);
 			startActivity(settingsIntent);
+		} else if (id == R.id.mi_rate_application) {
+			goToPlayStore();
+		} else if (id == R.id.mi_about) {
+			Intent aboutIntent = new Intent(this, AboutActivity.class);
+			startActivity(aboutIntent);
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void goToPlayStore() {
+		final String appPackageName = getPackageName();
+		try {
+			startActivity(new Intent(Intent.ACTION_VIEW,
+					Uri.parse("market://details?id=" + appPackageName)));
+		} catch (android.content.ActivityNotFoundException anfe) {
+			startActivity(new Intent(Intent.ACTION_VIEW,
+					Uri.parse("http://play.google.com/store/apps/details?id="
+							+ appPackageName)));
+		}
 	}
 
 	@Override

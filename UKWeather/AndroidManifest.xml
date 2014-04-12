@@ -46,6 +46,11 @@
             android:icon="@drawable/settings"
             android:label="@string/mi_settings_title" >
         </activity>
+        <activity
+            android:name="com.haringeymobile.ukweather.AboutActivity"
+            android:icon="@drawable/about"
+            android:label="@string/mi_about_program_title" >
+        </activity>
 
         <provider
             android:name="com.haringeymobile.ukweather.database.WeatherContentProvider"
