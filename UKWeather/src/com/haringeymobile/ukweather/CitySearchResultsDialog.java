@@ -9,6 +9,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -53,6 +54,10 @@ public class CitySearchResultsDialog extends DialogFragment {
 		View view = inflater.inflate(R.layout.fragment_search_results,
 				container);
 
+		TextView title = (TextView) view
+				.findViewById(R.id.city_search_dialog_title);
+		title.setText(R.string.dialog_title_search_results);
+
 		listView = (ListView) view.findViewById(android.R.id.list);
 		listView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
 
@@ -64,8 +69,8 @@ public class CitySearchResultsDialog extends DialogFragment {
 			}
 
 		});
-
-		getDialog().setTitle(R.string.dialog_title_search_results);
+		
+		getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		return view;
 	}
 
@@ -77,7 +82,7 @@ public class CitySearchResultsDialog extends DialogFragment {
 			ArrayList<String> cityNames = args
 					.getStringArrayList(CITY_NAME_LIST);
 			arrayAdapter = new CityNameArrayAdapter(getActivity(),
-					R.layout.row_city_list, cityNames);
+					R.layout.row_city_search_list, cityNames);
 		}
 		listView.setAdapter(arrayAdapter);
 	}

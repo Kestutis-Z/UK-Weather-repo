@@ -10,4 +10,12 @@ public class Coordinates {
 	@SerializedName("lon")
 	private double longitude;
 
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
 }

@@ -41,7 +41,7 @@
     <string name="dialog_title_no_cities_found">Your query has not returned any cities</string>
     <string name="dialog_title_query_too_short">Please enter at least three letters!</string>
     <string name="city_search_hint">Search cities</string>
-    <string name="dialog_title_search_results">Search results. Choose a city</string>
+    <string name="dialog_title_search_results">Search results (with latitude and longitude).Choose a city</string>
     <string name="dialog_title_delete_city_part_1">Delete</string>
     <string name="dialog_title_delete_city_part_2">and all associated records?</string>
     <string name="dialog_title_rename_city_part_1">"Please enter a new name for "</string>

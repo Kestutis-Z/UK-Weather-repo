@@ -84,4 +84,8 @@ public class CityCurrentWeather implements WeatherInformation {
 		return systemParameters;
 	}
 
+	public Coordinates getCoordinates() {
+		return coordinates;
+	}
+
 }

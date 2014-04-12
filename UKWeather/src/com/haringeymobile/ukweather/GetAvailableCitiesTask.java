@@ -18,8 +18,10 @@ import com.haringeymobile.ukweather.data.JsonParser;
 import com.haringeymobile.ukweather.data.JsonParsingFromUrlStrategy;
 import com.haringeymobile.ukweather.data.JsonParsingFromUrlUsingHttpConnection;
 import com.haringeymobile.ukweather.data.objects.CityCurrentWeather;
+import com.haringeymobile.ukweather.data.objects.Coordinates;
 import com.haringeymobile.ukweather.data.objects.SearchResponseForFindQuery;
 import com.haringeymobile.ukweather.utils.AsyncTaskWithProgressBar;
+import com.haringeymobile.ukweather.utils.MiscMethods;
 
 class GetAvailableCitiesTask extends
 		AsyncTaskWithProgressBar<URL, Void, SearchResponseForFindQuery> {
@@ -95,8 +97,16 @@ class GetAvailableCitiesTask extends
 		ArrayList<String> foundCityNames = new ArrayList<>();
 		List<CityCurrentWeather> cities = result.getCities();
 		for (CityCurrentWeather city : cities) {
-			foundCityNames.add(city.getCityName() + ", "
-					+ city.getSystemParameters().getCountry());
+			Coordinates cityCoordinates = city.getCoordinates();
+			foundCityNames.add(city.getCityName()
+					+ ", "
+					+ city.getSystemParameters().getCountry()
+					+ "\n("
+					+ MiscMethods.formatDoubleValue(cityCoordinates
+							.getLatitude())
+					+ ", "
+					+ MiscMethods.formatDoubleValue(cityCoordinates
+							.getLongitude()) + ")");
 		}
 		return foundCityNames;
 	}
