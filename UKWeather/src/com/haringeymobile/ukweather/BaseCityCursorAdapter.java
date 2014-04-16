@@ -9,8 +9,15 @@ import android.view.ViewGroup;
 
 import com.haringeymobile.ukweather.database.CityTable;
 
+/** An adapter to map the cities stored in the database to the city list. */
 public abstract class BaseCityCursorAdapter extends SimpleCursorAdapter {
 
+	/** The resource ID for a view corresponding to an even cursor position. */
+	static final int BACKGROUND_RESOURCE_EVEN = R.drawable.clickable_blue;
+	/** The resource ID for a view corresponding to an odd cursor position. */
+	static final int BACKGROUND_RESOURCE_ODD = R.drawable.clickable_green;
+
+	/** A listener for button clicks. */
 	protected OnClickListener onClickListener;
 
 	BaseCityCursorAdapter(Context context, int layout, Cursor c, String[] from,
@@ -23,13 +30,21 @@ public abstract class BaseCityCursorAdapter extends SimpleCursorAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = super.getView(position, convertView, parent);
 		if (position % 2 == 1) {
-			view.setBackgroundResource(CityListFragmentWithWeatherButtons.BACKGROUND_RESOURCE_ODD);
+			view.setBackgroundResource(BACKGROUND_RESOURCE_ODD);
 		} else {
-			view.setBackgroundResource(CityListFragmentWithWeatherButtons.BACKGROUND_RESOURCE_EVEN);
+			view.setBackgroundResource(BACKGROUND_RESOURCE_EVEN);
 		}
 		return view;
 	}
 
+	/**
+	 * Obtains the Open Weather Map city ID for the specified list position.
+	 * 
+	 * @param position
+	 *            city list position
+	 * @return Open Weather Map city ID, or -1 if city list does not contain the
+	 *         specified position
+	 */
 	int getCityId(int position) {
 		Cursor cursor = getCursor();
 		if (cursor.moveToPosition(position)) {
@@ -39,6 +54,15 @@ public abstract class BaseCityCursorAdapter extends SimpleCursorAdapter {
 		return CityTable.CITY_ID_DOES_NOT_EXIST;
 	}
 
+	/**
+	 * Obtains the city name stored in the database for the specified list
+	 * position.
+	 * 
+	 * @param position
+	 *            city list position
+	 * @return city name, or null if city list does not contain the specified
+	 *         position
+	 */
 	String getCityName(int position) {
 		Cursor cursor = getCursor();
 		if (cursor.moveToPosition(position)) {

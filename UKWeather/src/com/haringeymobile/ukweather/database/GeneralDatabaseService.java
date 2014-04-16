@@ -11,6 +11,8 @@ import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 public class GeneralDatabaseService extends IntentService {
 
 	private static final String APP_PACKAGE = "com.haringeymobile.ukweather";
+	public static final String ACTION_INSERT_OR_UPDATE_CITY_RECORD = APP_PACKAGE
+			+ ".insert_or_update_city_records";
 	public static final String ACTION_UPDATE_WEATHER_INFO = APP_PACKAGE
 			+ ".update_weather_info_records";
 	public static final String ACTION_RENAME_CITY = APP_PACKAGE
@@ -26,9 +28,17 @@ public class GeneralDatabaseService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-
 		String action = intent.getAction();
-		if (ACTION_UPDATE_WEATHER_INFO.equals(action)) {
+		if (ACTION_INSERT_OR_UPDATE_CITY_RECORD.equals(action)) {
+			int cityId = intent.getIntExtra(MainActivity.CITY_ID,
+					CityTable.CITY_ID_DOES_NOT_EXIST);
+			String cityName = intent.getStringExtra(MainActivity.CITY_NAME);
+			String currentWeatherJsonString = intent
+					.getStringExtra(MainActivity.WEATHER_INFO_JSON_STRING);
+			new SqlOperation(this, WeatherInfoType.CURRENT_WEATHER)
+					.updateOrInsertCityWithCurrentWeather(cityId, cityName,
+							currentWeatherJsonString);
+		} else if (ACTION_UPDATE_WEATHER_INFO.equals(action)) {
 			int cityId = SharedPrefsHelper.getCityIdFromSharedPrefs(this);
 			String jsonString = intent
 					.getStringExtra(MainActivity.WEATHER_INFO_JSON_STRING);

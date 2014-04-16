@@ -11,16 +11,39 @@ import com.haringeymobile.ukweather.R;
 import com.haringeymobile.ukweather.SettingsActivityPreHoneycomb;
 import com.haringeymobile.ukweather.WeatherInfoType;
 
+/**
+ * A layer between the app and the SQLite database, responsible for the CRUD
+ * functions.
+ */
 public class SqlOperation {
 
 	private Context context;
+	/**
+	 * The name of the {@link CityTable} column holding weather information as a
+	 * JSON string.
+	 */
 	private String columnNameForJsonString;
+	/**
+	 * The name of the {@link CityTable} column holding the time for the last
+	 * weather information update.
+	 */
 	private String columnNameForLastQueryTime;
 
+	/**
+	 * A constructor of SQLOperation, where weather information type is not
+	 * important (for instance, an operation to delete a record).
+	 */
 	public SqlOperation(Context context) {
 		this.context = context;
 	}
 
+	/**
+	 * A constructor of SQLOperation, where the specified weather information
+	 * type determines which columns will be queried or updated.
+	 * 
+	 * @param weatherInfoType
+	 *            a kind of weather information
+	 */
 	public SqlOperation(Context context, WeatherInfoType weatherInfoType) {
 		this.context = context;
 		switch (weatherInfoType) {
@@ -37,14 +60,14 @@ public class SqlOperation {
 			columnNameForLastQueryTime = CityTable.COLUMN_LAST_QUERY_TIME_FOR_THREE_HOURLY_WEATHER_FORECAST;
 			break;
 		default:
-			throw new IllegalArgumentException("Unsupported weatherInfoType: "
-					+ weatherInfoType);
+			throw new WeatherInfoType.IllegalWeatherInfoTypeArgumentException(
+					weatherInfoType);
 		}
 	}
 
 	/**
-	 * Updates city record if it already exists in the database, otherwise
-	 * inserts new record.
+	 * Updates current weather record for the specified city if it already
+	 * exists in the database, otherwise inserts a new record.
 	 * 
 	 * @param cityId
 	 *            Open Weather Map city ID
@@ -55,6 +78,12 @@ public class SqlOperation {
 	 */
 	public void updateOrInsertCityWithCurrentWeather(int cityId,
 			String cityName, String currentWeather) {
+		if (!CityTable.COLUMN_CACHED_JSON_CURRENT
+				.equals(columnNameForJsonString)) {
+			throw new IllegalStateException(
+					"This method is expected to deal with current weather information only");
+		}
+
 		Cursor cursor = getCursorWithCityId(cityId);
 		if (cursor == null) {
 			return;
@@ -70,6 +99,16 @@ public class SqlOperation {
 		}
 	}
 
+	/**
+	 * Inserts a new current weather record for the specified city.
+	 * 
+	 * @param cityId
+	 *            Open Weather Map city ID
+	 * @param cityName
+	 *            Open Weather Map city name
+	 * @param currentWeather
+	 *            Json string for the current city weather
+	 */
 	public void insertNewCityWithCurrentWeather(int cityId, String cityName,
 			String currentWeather) {
 		ContentValues newValues = new ContentValues();
@@ -92,18 +131,26 @@ public class SqlOperation {
 				WeatherContentProvider.CONTENT_URI_CITY_RECORDS, newValues);
 	}
 
+	/**
+	 * Obtains a cursor over the specified city record ID in the
+	 * {@link CityTable}.
+	 * 
+	 * @param cityId
+	 *            Open Weather Map city ID
+	 */
 	private Cursor getCursorWithCityId(int cityId) {
 		if (context == null) {
 			return null;
 		}
 		Cursor cursor = context.getContentResolver().query(
 				WeatherContentProvider.CONTENT_URI_CITY_RECORDS,
-				new String[] { CityTable._ID, CityTable.COLUMN_CITY_ID, },
+				new String[] { CityTable._ID, CityTable.COLUMN_CITY_ID },
 				CityTable.COLUMN_CITY_ID + "=?",
 				new String[] { Integer.toString(cityId) }, null);
 		return cursor;
 	}
 
+	/** Obtains the uri of the row pointed to by the provided cursor. */
 	private Uri getRowUri(Cursor cursor) {
 		int columnIndex = cursor.getColumnIndexOrThrow(CityTable._ID);
 		long rowId = cursor.getLong(columnIndex);
@@ -112,6 +159,14 @@ public class SqlOperation {
 		return userRowUri;
 	}
 
+	/**
+	 * Updates the specified city with new weather data.
+	 * 
+	 * @param cityId
+	 *            Open Weather Map city ID
+	 * @param jsonString
+	 *            JSON string for the weather information of some kind
+	 */
 	public void updateWeatherInfo(int cityId, String jsonString) {
 		Cursor cursor = getCursorWithWeatherInfo(cityId);
 		if (cursor == null) {
@@ -127,6 +182,13 @@ public class SqlOperation {
 		cursor.close();
 	}
 
+	/**
+	 * Obtains a cursor over the specified city weather information record in
+	 * the {@link CityTable}.
+	 * 
+	 * @param cityId
+	 *            Open Weather Map city ID
+	 */
 	private Cursor getCursorWithWeatherInfo(int cityId) {
 		if (context == null) {
 			return null;
@@ -141,6 +203,13 @@ public class SqlOperation {
 		return cursor;
 	}
 
+	/**
+	 * Creates {@link ContentValues} with the added time and weather information
+	 * values.
+	 * 
+	 * @param jsonString
+	 *            JSON string for the weather information of some kind
+	 */
 	private ContentValues createContentValuesWithDateAndWeatherJsonString(
 			String jsonString) {
 		ContentValues newValues = new ContentValues();
@@ -151,6 +220,14 @@ public class SqlOperation {
 		return newValues;
 	}
 
+	/**
+	 * Obtains cached JSON data for the specified city.
+	 * 
+	 * @param cityId
+	 *            Open Weather Map city ID
+	 * @return a string, representing JSON weather data, or null, if no cached
+	 *         data is stored
+	 */
 	public String getJsonStringForWeatherInfo(int cityId) {
 		Cursor cursor = getCursorWithWeatherInfo(cityId);
 		if (cursor == null) {
@@ -165,6 +242,15 @@ public class SqlOperation {
 		return weatherInfoJson;
 	}
 
+	/**
+	 * Obtains cached JSON data using the specified cursor.
+	 * 
+	 * @param cursor
+	 *            a cursor pointing to the {@link CityTable} row with cached
+	 *            weather data
+	 * @return a string, representing JSON weather data, or null, if the cached
+	 *         weather data is outdated
+	 */
 	private String getJsonStringForWeatherInfo(Cursor cursor) {
 		String weatherInfoJsonString = null;
 		if (!recordNeedsToBeUpdatedForWeatherInfo(cursor)) {
@@ -175,6 +261,15 @@ public class SqlOperation {
 		return weatherInfoJsonString;
 	}
 
+	/**
+	 * Determines whether the weather records are outdated and should be
+	 * renewed.
+	 * 
+	 * @param cursor
+	 *            a cursor pointing to the {@link CityTable} row with cached
+	 *            weather data
+	 * @return true, if current records are too old; false otherwise
+	 */
 	private boolean recordNeedsToBeUpdatedForWeatherInfo(Cursor cursor) {
 		int columnIndexForDate = cursor
 				.getColumnIndexOrThrow(columnNameForLastQueryTime);
@@ -187,6 +282,12 @@ public class SqlOperation {
 		}
 	}
 
+	/**
+	 * Obtains the time period (which can be specified by a user) for which the
+	 * cached weather data can be reused.
+	 * 
+	 * @return a time in milliseconds
+	 */
 	private long getWeatherDataCachePeriod() {
 		String minutesString = PreferenceManager.getDefaultSharedPreferences(
 				context).getString(
@@ -197,6 +298,12 @@ public class SqlOperation {
 		return minutes * 60 * 1000;
 	}
 
+	/**
+	 * Removes the specified city record from the {@link CityTable}.
+	 * 
+	 * @param cityId
+	 *            Open Weather Map city ID
+	 */
 	public void deleteCity(int cityId) {
 		context.getContentResolver().delete(
 				WeatherContentProvider.CONTENT_URI_CITY_RECORDS,
@@ -204,6 +311,14 @@ public class SqlOperation {
 				new String[] { Integer.toString(cityId) });
 	}
 
+	/**
+	 * Changes the name of the specified city in the {@link CityTable}.
+	 * 
+	 * @param cityId
+	 *            Open Weather Map city ID
+	 * @param newName
+	 *            the new (user-chosen) name for the city
+	 */
 	public void renameCity(int cityId, String newName) {
 		ContentValues newValues = new ContentValues();
 		newValues.put(CityTable.COLUMN_NAME, newName);

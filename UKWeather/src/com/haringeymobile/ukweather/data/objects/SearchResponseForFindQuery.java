@@ -4,6 +4,10 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * An object corresponding to the JSON data for the Open Weather Map 'find
+ * cities' query.
+ */
 public class SearchResponseForFindQuery {
 
 	@SerializedName("cod")

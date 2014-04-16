@@ -9,10 +9,15 @@ import android.text.method.MovementMethod;
 import android.text.util.Linkify;
 import android.widget.TextView;
 
+/**
+ * An activity that displays information about the application, as well as credits
+ * and licenses for the open source libraries used in the project.
+ */
 public class AboutActivity extends ActionBarActivity {
 
 	private static final int LINKS_COLOUR = R.color.blue3;
 
+	/** Color resource id for email and web links. */
 	private int linkTextColour;
 
 	@Override
@@ -27,22 +32,24 @@ public class AboutActivity extends ActionBarActivity {
 		final SpannableString s1 = new SpannableString(
 				res.getText(R.string.about_text_part_1));
 		Linkify.addLinks(s1, Linkify.EMAIL_ADDRESSES);
-		displayText(aboutTextView_1, s1);
+		displayTextWithLinks(aboutTextView_1, s1);
 
 		TextView aboutTextView_2 = (TextView) findViewById(R.id.about_textview_part_2);
 		final SpannableString s2 = new SpannableString(
 				res.getText(R.string.about_text_part_2));
 		Linkify.addLinks(s2, Linkify.WEB_URLS);
-		displayText(aboutTextView_2, s2);
+		displayTextWithLinks(aboutTextView_2, s2);
 
 	}
 
-	private void displayText(TextView aboutTextView_1, final SpannableString s1) {
-		MovementMethod m1 = aboutTextView_1.getMovementMethod();
+	/** Sets text with clickable links in the specified TextView. */
+	private void displayTextWithLinks(TextView textView,
+			final SpannableString spannableString) {
+		MovementMethod m1 = textView.getMovementMethod();
 		if ((m1 == null) || !(m1 instanceof LinkMovementMethod))
-			aboutTextView_1.setMovementMethod(LinkMovementMethod.getInstance());
-		aboutTextView_1.setLinkTextColor(linkTextColour);
-		aboutTextView_1.setText(s1);
+			textView.setMovementMethod(LinkMovementMethod.getInstance());
+		textView.setLinkTextColor(linkTextColour);
+		textView.setText(spannableString);
 	}
 
 }

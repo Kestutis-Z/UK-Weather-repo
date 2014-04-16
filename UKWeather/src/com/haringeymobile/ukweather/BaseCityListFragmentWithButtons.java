@@ -16,14 +16,18 @@ import android.widget.ListView;
 import com.haringeymobile.ukweather.database.CityTable;
 import com.haringeymobile.ukweather.database.WeatherContentProvider;
 
+/** A fragment containing a list of cities with clickable buttons. */
 public abstract class BaseCityListFragmentWithButtons extends ListFragment
 		implements LoaderCallbacks<Cursor>, OnClickListener {
 
-	protected int[] TO = new int[] { R.id.city_name_in_list_row_text_view };
-	protected String[] COLUMNS_TO_DISPLAY = new String[] { CityTable.COLUMN_NAME };
-
-	static final int BACKGROUND_RESOURCE_EVEN = R.drawable.clickable_blue;
-	static final int BACKGROUND_RESOURCE_ODD = R.drawable.clickable_green;
+	/** Columns in the database that will be displayed in a list row. */
+	protected static final String[] COLUMNS_TO_DISPLAY = new String[] { CityTable.COLUMN_NAME };
+	/**
+	 * Resource IDs of views that will display the data mapped from the
+	 * database.
+	 */
+	protected static final int[] TO = new int[] { R.id.city_name_in_list_row_text_view };
+	/** Loader ID. */
 	private static final int LOADER_ALL_CITY_RECORDS = 0;
 
 	protected Activity parentActivity;
@@ -38,33 +42,41 @@ public abstract class BaseCityListFragmentWithButtons extends ListFragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_city_list, container,
-				false);
-		return view;
+		return inflater.inflate(R.layout.fragment_city_list, container, false);
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		displayCityList();
+		prepareCityList();
+		getLoaderManager().initLoader(LOADER_ALL_CITY_RECORDS, null, this);
 	}
 
-	private void displayCityList() {
+	/** Prepares the list view to load and display data. */
+	private void prepareCityList() {
 		cursorAdapter = getCityCursorAdapter();
-
 		setListAdapter(cursorAdapter);
+		setListViewForClicks();
+	}
+
+	/**
+	 * Obtains a concrete adapter with specific button set.
+	 * 
+	 * @return an adapter with specific functionality
+	 */
+	protected abstract BaseCityCursorAdapter getCityCursorAdapter();
+
+	/**
+	 * Enables the buttons contained by the list items gain focus and react to
+	 * clicks.
+	 */
+	private void setListViewForClicks() {
 		ListView listView = getListView();
 		listView.setItemsCanFocus(true);
 		listView.setFocusable(false);
 		listView.setFocusableInTouchMode(false);
 		listView.setClickable(false);
-
-		getLoaderManager().initLoader(LOADER_ALL_CITY_RECORDS, null, this);
 	}
-
-	protected abstract int getRowLayoutId();
-
-	protected abstract BaseCityCursorAdapter getCityCursorAdapter();
 
 	@Override
 	public void onResume() {

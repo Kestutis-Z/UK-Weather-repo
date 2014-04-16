@@ -11,8 +11,14 @@ import android.widget.TextView;
 
 import com.haringeymobile.ukweather.database.CityTable;
 
+/**
+ * An adapter to map the cities stored in the database to the city list rows
+ * with buttons requesting utility features, such as removing or renaming the
+ * city.
+ */
 public class CityUtilitiesCursorAdapter extends BaseCityCursorAdapter {
 
+	/** A helper to implement the "view holder" design pattern. */
 	private static class CityRowUtilitiesViewHolder {
 
 		TextView cityNameTextView;

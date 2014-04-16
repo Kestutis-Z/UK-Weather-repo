@@ -13,6 +13,7 @@ import com.haringeymobile.ukweather.database.CityTable;
 
 public class CityWeatherCursorAdapter extends BaseCityCursorAdapter {
 
+	/** A helper to implement the "view holder" design pattern. */
 	private static class CityRowWeatherViewHolder {
 
 		TextView cityNameTextView;
@@ -22,6 +23,10 @@ public class CityWeatherCursorAdapter extends BaseCityCursorAdapter {
 
 	}
 
+	/**
+	 * An adapter to map the cities stored in the database to the city list rows
+	 * with buttons requesting various weather information.
+	 */
 	CityWeatherCursorAdapter(Context context, int layout, Cursor c,
 			String[] from, int[] to, int flags, OnClickListener onClickListener) {
 		super(context, layout, c, from, to, flags, onClickListener);
@@ -52,7 +57,8 @@ public class CityWeatherCursorAdapter extends BaseCityCursorAdapter {
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		CityRowWeatherViewHolder holder = (CityRowWeatherViewHolder) view.getTag();
+		CityRowWeatherViewHolder holder = (CityRowWeatherViewHolder) view
+				.getTag();
 		int nameColumsIndex = cursor
 				.getColumnIndexOrThrow(CityTable.COLUMN_NAME);
 		holder.cityNameTextView.setText(cursor.getString(nameColumsIndex));

@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.haringeymobile.ukweather.data.objects.CityThreeHourlyWeatherForecast;
 import com.haringeymobile.ukweather.data.objects.WeatherInformation;
 
+/** A fragment displaying weather forecast for a three hour period. */
 public class WeatherThreeHourlyForecastChildFragment extends
 		WeatherInfoFragment {
 

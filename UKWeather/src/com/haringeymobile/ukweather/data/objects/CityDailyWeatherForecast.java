@@ -3,8 +3,8 @@ package com.haringeymobile.ukweather.data.objects;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
-import com.haringeymobile.ukweather.data.objects.Temperature.TemperatureScale;
 
+/** Weather forecast for one day. */
 public class CityDailyWeatherForecast implements WeatherInformation {
 
 	@SerializedName("dt")

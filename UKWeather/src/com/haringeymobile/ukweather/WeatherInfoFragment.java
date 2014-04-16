@@ -3,6 +3,7 @@ package com.haringeymobile.ukweather;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import android.app.Activity;
@@ -23,13 +24,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.haringeymobile.ukweather.WeatherInfoType.IllegalWeatherInfoTypeArgumentException;
-import com.haringeymobile.ukweather.data.objects.Temperature.TemperatureScale;
+import com.haringeymobile.ukweather.data.objects.TemperatureScale;
 import com.haringeymobile.ukweather.data.objects.Weather;
 import com.haringeymobile.ukweather.data.objects.WeatherInformation;
 import com.haringeymobile.ukweather.data.objects.Wind;
-import com.haringeymobile.ukweather.data.objects.Wind.WindSpeedMeasurementUnit;
+import com.haringeymobile.ukweather.data.objects.WindSpeedMeasurementUnit;
 import com.haringeymobile.ukweather.utils.MiscMethods;
 
+/** A fragment displaying a common weather information. */
 public abstract class WeatherInfoFragment extends Fragment {
 
 	protected static final String SEPARATOR = ": ";
@@ -48,27 +50,64 @@ public abstract class WeatherInfoFragment extends Fragment {
 
 	protected Resources res;
 
+	/**
+	 * Creates and sets the required weather information frgament.
+	 * 
+	 * @param weatherInfoType
+	 *            requested weather information type
+	 * @param cityName
+	 *            the name of the city for which the weather information was
+	 *            requested and obtained
+	 * @param jsonString
+	 *            JSON weather information data in textual form
+	 * @return a fragment to display the requested weather information
+	 */
 	public static WeatherInfoFragment newInstance(
 			WeatherInfoType weatherInfoType, String cityName, String jsonString) {
-		WeatherInfoFragment weatherInfoFragment;
+		WeatherInfoFragment weatherInfoFragment = createWeatherInfoFragment(weatherInfoType);
+		Bundle args = getArgumentBundle(cityName, jsonString);
+		weatherInfoFragment.setArguments(args);
+		return weatherInfoFragment;
+	}
+
+	/**
+	 * Creates a fragment, corresponding to the requested weather information
+	 * type.
+	 * 
+	 * @param weatherInfoType
+	 *            requested weather information type
+	 * @return a correct type of weather information fragment
+	 */
+	private static WeatherInfoFragment createWeatherInfoFragment(
+			WeatherInfoType weatherInfoType) {
 		switch (weatherInfoType) {
 		case CURRENT_WEATHER:
-			weatherInfoFragment = new WeatherCurrentInfoFragment();
-			break;
+			return new WeatherCurrentInfoFragment();
 		case DAILY_WEATHER_FORECAST:
-			weatherInfoFragment = new WeatherDailyWeatherForecastChildFragment();
-			break;
+			return new WeatherDailyWeatherForecastChildFragment();
 		case THREE_HOURLY_WEATHER_FORECAST:
-			weatherInfoFragment = new WeatherThreeHourlyForecastChildFragment();
-			break;
+			return new WeatherThreeHourlyForecastChildFragment();
 		default:
 			throw new IllegalWeatherInfoTypeArgumentException(weatherInfoType);
 		}
+	}
+
+	/**
+	 * Obtains a bundle with the arguments, to be used to instantiate a new
+	 * weather information fragment
+	 * 
+	 * @param cityName
+	 *            the name of the city for which the weather information was
+	 *            requested and obtained
+	 * @param jsonString
+	 *            JSON weather information data in textual form
+	 * @return an argument bundle
+	 */
+	private static Bundle getArgumentBundle(String cityName, String jsonString) {
 		Bundle args = new Bundle();
 		args.putString(CITY_NAME, cityName);
 		args.putString(JSON_STRING, jsonString);
-		weatherInfoFragment.setArguments(args);
-		return weatherInfoFragment;
+		return args;
 	}
 
 	@Override
@@ -82,11 +121,18 @@ public abstract class WeatherInfoFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_common_weather_info,
 				container, false);
-		initializeCommonViews(view);
+		getCommonViews(view);
 		return view;
 	}
 
-	protected void initializeCommonViews(View view) {
+	/**
+	 * Obtain the text and image views to be displayed in all types of weather
+	 * information fragments.
+	 * 
+	 * @param view
+	 *            the root view for the fragment
+	 */
+	protected void getCommonViews(View view) {
 		extraInfoTextView = (TextView) view
 				.findViewById(R.id.city_extra_info_text_view);
 		conditionsTextView = (TextView) view
@@ -102,6 +148,12 @@ public abstract class WeatherInfoFragment extends Fragment {
 		windTextView = (TextView) view.findViewById(R.id.wind_text_view);
 	}
 
+	/**
+	 * Displays the specified weather information on the screen.
+	 * 
+	 * @param weatherInformation
+	 *            various parameters describing weather
+	 */
 	public void displayWeather(WeatherInformation weatherInformation) {
 		displayExtraInfo(weatherInformation);
 		displayConditions(weatherInformation);
@@ -109,9 +161,23 @@ public abstract class WeatherInfoFragment extends Fragment {
 		displayWindInfo(weatherInformation);
 	}
 
+	/**
+	 * Displays specific details, depending on the requested weather information
+	 * type - typically, a city name, and, if applicable, the date and time
+	 * information.
+	 * 
+	 * @param weatherInformation
+	 *            various parameters describing weather
+	 */
 	protected abstract void displayExtraInfo(
 			WeatherInformation weatherInformation);
 
+	/**
+	 * Describes and illustrates the weather.
+	 * 
+	 * @param weatherInformation
+	 *            various parameters describing weather
+	 */
 	private void displayConditions(WeatherInformation weatherInformation) {
 		String weatherDescription = weatherInformation.getType() + " ("
 				+ weatherInformation.getDescription() + ")";
@@ -119,6 +185,12 @@ public abstract class WeatherInfoFragment extends Fragment {
 		new SetIconDrawableTask().execute(weatherInformation.getIconName());
 	}
 
+	/**
+	 * Displays weather temperature, pressure, and humidity.
+	 * 
+	 * @param weatherInformation
+	 *            various parameters describing weather
+	 */
 	private void displayWeatherNumericParametersText(
 			WeatherInformation weatherInformation) {
 		displayTemperatureText(weatherInformation);
@@ -126,6 +198,12 @@ public abstract class WeatherInfoFragment extends Fragment {
 		displayHumidity(weatherInformation);
 	}
 
+	/**
+	 * Displays temperature, taking into account the scale preffered by a user.
+	 * 
+	 * @param weatherInformation
+	 *            various parameters describing weather
+	 */
 	private void displayTemperatureText(WeatherInformation weatherInformation) {
 		TemperatureScale temperatureScale = getTemperatureScale();
 		String temperatureInfo = MiscMethods
@@ -135,6 +213,11 @@ public abstract class WeatherInfoFragment extends Fragment {
 		temperatureTextView.setText(temperatureInfo);
 	}
 
+	/**
+	 * Obtains the temperature scale from the shared preferences.
+	 * 
+	 * @return the temperature scale preffered by a user
+	 */
 	protected TemperatureScale getTemperatureScale() {
 		Context context = getActivity();
 		String temperatureScaleIdString = PreferenceManager
@@ -146,6 +229,12 @@ public abstract class WeatherInfoFragment extends Fragment {
 		return TemperatureScale.getTemperatureScaleById(temperatureScaleId);
 	}
 
+	/**
+	 * Displays pressure.
+	 * 
+	 * @param weatherInformation
+	 *            various parameters describing weather
+	 */
 	private void displayAtmosphericPressureText(
 			WeatherInformation weatherInformation) {
 		String pressureInfo = res
@@ -157,12 +246,24 @@ public abstract class WeatherInfoFragment extends Fragment {
 		pressureTextView.setText(pressureInfo);
 	}
 
+	/**
+	 * Displays humidity.
+	 * 
+	 * @param weatherInformation
+	 *            various parameters describing weather
+	 */
 	private void displayHumidity(WeatherInformation weatherInformation) {
 		String humidityInfo = res.getString(R.string.weather_info_humidity)
 				+ SEPARATOR + weatherInformation.getHumidity() + PERCENT_SIGN;
 		humidityTextView.setText(humidityInfo);
 	}
 
+	/**
+	 * Displays wind speed and direction.
+	 * 
+	 * @param weatherInformation
+	 *            various parameters describing weather
+	 */
 	private void displayWindInfo(WeatherInformation weatherInformation) {
 		Wind wind = weatherInformation.getWind();
 		WindSpeedMeasurementUnit windSpeedMeasurementUnit = getWindSpeedMeasurementUnit();
@@ -181,6 +282,11 @@ public abstract class WeatherInfoFragment extends Fragment {
 		windTextView.setText(windInfo);
 	}
 
+	/**
+	 * Obtains the wind speed measurement units from the shared preferences.
+	 * 
+	 * @return the wind speed measurement units preffered by a user
+	 */
 	private WindSpeedMeasurementUnit getWindSpeedMeasurementUnit() {
 		Context context = getActivity();
 		String windSpeedMeasurementUnitIdString = PreferenceManager
@@ -195,29 +301,51 @@ public abstract class WeatherInfoFragment extends Fragment {
 				.getWindSpeedMeasurementUnitById(windSpeedMeasurementUnitId);
 	}
 
+	/** A task to obtain and display an icon, illustrating the weather. */
 	private class SetIconDrawableTask extends AsyncTask<String, Void, Drawable> {
 
 		@Override
 		protected Drawable doInBackground(String... args) {
-			String iconUrl = Weather.ICON_URL_PREFIX + args[0];
+			Activity parentActivity = getActivity();
+			if (parentActivity == null) {
+				return null;
+			}
+			InputStream iconInputStream = getInputStream(args[0]);
+			if (iconInputStream == null) {
+				return null;
+			} else {
+				Bitmap iconBitmap = BitmapFactory.decodeStream(iconInputStream);
+				Drawable iconDrawable = new BitmapDrawable(
+						parentActivity.getResources(), iconBitmap);
+				return iconDrawable;
+			}
+		}
+
+		/**
+		 * Obtains an input stream to be decoded into a bitmap.
+		 * 
+		 * @param iconCode
+		 *            Open Weather Map code for the weather conditions
+		 * @return an input stream for the weather icon
+		 */
+		private InputStream getInputStream(String iconCode) {
+			String iconUrl = Weather.ICON_URL_PREFIX + iconCode;
+			InputStream input;
 			try {
 				URL url = new URL(iconUrl);
 				HttpURLConnection connection = (HttpURLConnection) url
 						.openConnection();
 				connection.setDoInput(true);
 				connection.connect();
-				InputStream input = connection.getInputStream();
-				Bitmap myBitmap = BitmapFactory.decodeStream(input);
-				if (getActivity() == null) {
-					return null;
-				}
-				Drawable drawable = new BitmapDrawable(getActivity()
-						.getResources(), myBitmap);
-				return drawable;
+				input = connection.getInputStream();
+			} catch (MalformedURLException e) {
+				MiscMethods.log("MalformedURLException");
+				return null;
 			} catch (IOException e) {
-				e.printStackTrace();
+				MiscMethods.log("IOException");
 				return null;
 			}
+			return input;
 		}
 
 		@Override

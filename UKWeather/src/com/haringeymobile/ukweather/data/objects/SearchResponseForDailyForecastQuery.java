@@ -4,6 +4,10 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * An object corresponding to the JSON data for the Open Weather Map daily
+ * weather forecast query.
+ */
 public class SearchResponseForDailyForecastQuery {
 
 	@SerializedName("city")

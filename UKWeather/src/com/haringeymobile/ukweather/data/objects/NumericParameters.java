@@ -1,7 +1,6 @@
 package com.haringeymobile.ukweather.data.objects;
 
 import com.google.gson.annotations.SerializedName;
-import com.haringeymobile.ukweather.data.objects.Temperature.TemperatureScale;
 
 public class NumericParameters {
 

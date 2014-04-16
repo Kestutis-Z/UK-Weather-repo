@@ -3,61 +3,81 @@ package com.haringeymobile.ukweather;
 import android.app.Activity;
 import android.view.View;
 
+/**
+ * A fragment containing a list of cities with clickable buttons, requesting
+ * utility work, such as renaming a city, or removing it from the database.
+ */
 public class CityListFragmentWithUtilityButtons extends
 		BaseCityListFragmentWithButtons {
 
-	public interface Listener {
+	/** A listener for utility button clicks. */
+	public interface OnUtilityButtonClickedListener {
 
+		/**
+		 * Reacts to the request to remove the specified city from the database.
+		 * 
+		 * @param cityId
+		 *            OpenWeatherMap city ID
+		 * @param cityName
+		 *            city name in the database
+		 */
 		public void onCityRecordDeletionRequested(int cityId, String cityName);
 
+		/**
+		 * Reacts to the request to rename the specified city.
+		 * 
+		 * @param cityId
+		 *            OpenWeatherMap city ID
+		 * @param cityOriginalName
+		 *            current city name in the database
+		 */
 		public void onCityNameChangeRequested(int cityId,
 				String cityOriginalName);
 
 	}
 
-	private Listener listener;
+	private OnUtilityButtonClickedListener onUtilityButtonClickedListener;
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		try {
-			listener = (Listener) activity;
+			onUtilityButtonClickedListener = (OnUtilityButtonClickedListener) activity;
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
-					+ " must implement Listener");
+					+ " must implement OnUtilityButtonClickedListener");
 		}
 	}
 
-	protected int getRowLayoutId() {
-		return R.layout.row_city_list_with_weather_buttons;
-	}
-
+	@Override
 	protected BaseCityCursorAdapter getCityCursorAdapter() {
-		return new CityUtilitiesCursorAdapter(parentActivity, getRowLayoutId(),
-				null, COLUMNS_TO_DISPLAY, TO, 0, this);
+		return new CityUtilitiesCursorAdapter(parentActivity,
+				R.layout.row_city_list_with_weather_buttons, null,
+				COLUMNS_TO_DISPLAY, TO, 0, this);
 	}
 
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		listener = null;
+		onUtilityButtonClickedListener = null;
 	}
 
 	@Override
 	public void onClick(View view) {
-		int position = getListView().getPositionForView(view);
-		int cityId = cursorAdapter.getCityId(position);
+		int listItemPosition = getListView().getPositionForView(view);
+		int cityId = cursorAdapter.getCityId(listItemPosition);
+		String cityName = cursorAdapter.getCityName(listItemPosition);
+
 		int viewId = view.getId();
 		switch (viewId) {
 		case R.id.city_rename_button:
-			listener.onCityNameChangeRequested(cityId,
-					cursorAdapter.getCityName(position));
+			onUtilityButtonClickedListener.onCityNameChangeRequested(cityId,
+					cityName);
 			break;
 		case R.id.city_delete_button:
-			listener.onCityRecordDeletionRequested(cityId,
-					cursorAdapter.getCityName(position));
+			onUtilityButtonClickedListener.onCityRecordDeletionRequested(
+					cityId, cityName);
 			break;
-
 		default:
 			throw new IllegalArgumentException("Not supported view ID: "
 					+ viewId);

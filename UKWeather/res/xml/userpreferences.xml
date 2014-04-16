@@ -8,7 +8,6 @@
         android:key="temperature_scale"
         android:summary="@string/pref_temperature_scale_summary"
         android:title="@string/pref_temperature_scale_title" />
-
     <ListPreference
         android:defaultValue="@string/pref_wind_speed_unit_id_default"
         android:entries="@array/pref_wind_speed_unit_titles"
@@ -16,7 +15,6 @@
         android:key="wind_speed_measurement_unit"
         android:summary="@string/pref_wind_speed_unit_summary"
         android:title="@string/pref_wind_speed_unit_title" />
-
     <ListPreference
         android:defaultValue="@string/pref_data_cache_period_default"
         android:entries="@array/pref_data_cache_period_titles"

@@ -13,10 +13,11 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.haringeymobile.ukweather.data.objects.CityDailyWeatherForecast;
 import com.haringeymobile.ukweather.data.objects.Temperature;
+import com.haringeymobile.ukweather.data.objects.TemperatureScale;
 import com.haringeymobile.ukweather.data.objects.WeatherInformation;
-import com.haringeymobile.ukweather.data.objects.Temperature.TemperatureScale;
 import com.haringeymobile.ukweather.utils.MiscMethods;
 
+/** A fragment displaying weather forecast for one day. */
 public class WeatherDailyWeatherForecastChildFragment extends
 		WeatherInfoFragment {
 
@@ -27,7 +28,7 @@ public class WeatherDailyWeatherForecastChildFragment extends
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_daily_weather_forecast,
 				container, false);
-		initializeCommonViews(view);
+		getCommonViews(view);
 		extraTemperaturesTextView = (TextView) view
 				.findViewById(R.id.night_morning_evening_temperatures_text_view);
 		return view;
@@ -47,19 +48,51 @@ public class WeatherDailyWeatherForecastChildFragment extends
 	@Override
 	protected void displayExtraInfo(WeatherInformation weatherInformation) {
 		CityDailyWeatherForecast cityDailyWeatherForecast = (CityDailyWeatherForecast) weatherInformation;
-		displayTemperatureText(cityDailyWeatherForecast);
+
+		String extraInfoText = getExtraInfoText(cityDailyWeatherForecast);
+		extraInfoTextView.setText(extraInfoText);
+
+		String temperatureInfo = getExtraTemperatureText(cityDailyWeatherForecast);
+		extraTemperaturesTextView.setText(temperatureInfo);
+	}
+
+	/**
+	 * Obtains a text to be displayed in the extraInfoTextView.
+	 * 
+	 * @param cityDailyWeatherForecast
+	 *            Java object, corresponding to the Open Weather Map JSON
+	 *            weather forecast data for one day
+	 * @return a weather forecast date, time, and location
+	 */
+	private String getExtraInfoText(
+			CityDailyWeatherForecast cityDailyWeatherForecast) {
 		Context context = getActivity();
 		Date date = new Date(cityDailyWeatherForecast.getDate() * 1000);
 		String dateString = DateFormat.getLongDateFormat(context).format(date);
 		String timeString = DateFormat.getTimeFormat(context).format(date);
-		extraInfoTextView.setText(dateString + "\n" + timeString + "\n"
-				+ getArguments().getString(CITY_NAME));
+		return dateString + "\n" + timeString + "\n"
+				+ getArguments().getString(CITY_NAME);
 	}
 
-	private void displayTemperatureText(
-			CityDailyWeatherForecast weatherInformation) {
+	/**
+	 * Obtains and displays the night, morning, and evening temperatures.
+	 * 
+	 * @param cityDailyWeatherForecast
+	 *            Java object, corresponding to the Open Weather Map JSON
+	 *            weather forecast data for one day
+	 */
 
-		CityDailyWeatherForecast weatherForecast = (CityDailyWeatherForecast) weatherInformation;
+	/**
+	 * Obtains a text to be displayed in the extraTemperaturesTextView.
+	 * 
+	 * @param cityDailyWeatherForecast
+	 *            Java object, corresponding to the Open Weather Map JSON
+	 *            weather forecast data for one day
+	 * @return the night, morning, and evening temperatures
+	 */
+	private String getExtraTemperatureText(
+			CityDailyWeatherForecast cityDailyWeatherForecast) {
+		CityDailyWeatherForecast weatherForecast = (CityDailyWeatherForecast) cityDailyWeatherForecast;
 		Temperature temperature = weatherForecast.getTemperature();
 		TemperatureScale temperatureScale = getTemperatureScale();
 		String temperatureScaleDegree = res.getString(temperatureScale
@@ -71,11 +104,10 @@ public class WeatherDailyWeatherForecastChildFragment extends
 				+ MiscMethods.formatDoubleValue(temperature
 						.getMorningTemperature(temperatureScale))
 				+ temperatureScaleDegree;
-		temperatureInfo += "\n"
+		return temperatureInfo += "\n"
 				+ MiscMethods.formatDoubleValue(temperature
 						.getEveningTemperature(temperatureScale))
 				+ temperatureScaleDegree;
-		extraTemperaturesTextView.setText(temperatureInfo);
 	}
 
 }

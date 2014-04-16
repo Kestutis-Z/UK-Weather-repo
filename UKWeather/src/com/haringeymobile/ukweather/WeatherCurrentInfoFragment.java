@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.haringeymobile.ukweather.data.objects.CityCurrentWeather;
 import com.haringeymobile.ukweather.data.objects.WeatherInformation;
 
+/** A fragment displaying current weather information. */
 public class WeatherCurrentInfoFragment extends WeatherInfoFragment {
 
 	@Override

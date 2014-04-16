@@ -7,7 +7,8 @@ import android.provider.BaseColumns;
 import com.haringeymobile.ukweather.data.InitialCity;
 import com.haringeymobile.ukweather.utils.MiscMethods;
 
-public class CityTable implements BaseColumns {
+/** The database table to hold city current weather and weather forecast records. */
+public final class CityTable implements BaseColumns {
 
 	public static final long CITY_NEVER_QUERIED = -1;
 	public static final int CITY_ID_DOES_NOT_EXIST = -1;
@@ -51,22 +52,37 @@ public class CityTable implements BaseColumns {
 		insertInitialData(database);
 	}
 
+	/**
+	 * Inserts initial cities with their default values into the database.
+	 * 
+	 * @see InitialCity
+	 */
 	private static void insertInitialData(SQLiteDatabase database) {
 		for (InitialCity city : InitialCity.values()) {
 			ContentValues newValues = new ContentValues();
 			newValues.put(COLUMN_CITY_ID, city.getOpenWeatherMapId());
 			newValues.put(COLUMN_NAME, city.getDisplayName());
-			newValues.put(COLUMN_LAST_QUERY_TIME_FOR_CURRENT_WEATHER, CITY_NEVER_QUERIED);
+			newValues.put(COLUMN_LAST_QUERY_TIME_FOR_CURRENT_WEATHER,
+					CITY_NEVER_QUERIED);
 			newValues.putNull(COLUMN_CACHED_JSON_CURRENT);
 			putInitialDataForVersion2(newValues);
 			database.insert(TABLE_CITIES, null, newValues);
 		}
 	}
 
+	/**
+	 * Puts default values for the new columns in databse version 2 into the
+	 * provided {@link ContentValues}.
+	 * 
+	 * @param newValues
+	 *            values for the new record to be inserted into the database
+	 */
 	private static void putInitialDataForVersion2(ContentValues newValues) {
-		newValues.put(COLUMN_LAST_QUERY_TIME_FOR_DAILY_WEATHER_FORECAST, CITY_NEVER_QUERIED);
+		newValues.put(COLUMN_LAST_QUERY_TIME_FOR_DAILY_WEATHER_FORECAST,
+				CITY_NEVER_QUERIED);
 		newValues.putNull(COLUMN_CACHED_JSON_DAILY_FORECAST);
-		newValues.put(COLUMN_LAST_QUERY_TIME_FOR_THREE_HOURLY_WEATHER_FORECAST, CITY_NEVER_QUERIED);
+		newValues.put(COLUMN_LAST_QUERY_TIME_FOR_THREE_HOURLY_WEATHER_FORECAST,
+				CITY_NEVER_QUERIED);
 		newValues.putNull(COLUMN_CACHED_JSON_THREE_HOURLY_FORECAST);
 		newValues.put(COLUMN_LAST_OVERALL_QUERY_TIME, CITY_NEVER_QUERIED);
 	}
@@ -83,6 +99,7 @@ public class CityTable implements BaseColumns {
 		}
 	}
 
+	/** Performs transactions required to upgrade the database from version 1. */
 	private static void alterDatabaseVersion_1(SQLiteDatabase database) {
 		database.beginTransaction();
 		try {
@@ -96,6 +113,10 @@ public class CityTable implements BaseColumns {
 		}
 	}
 
+	/**
+	 * Prepares the "Cities" table for alteration, and inserts the new columns;
+	 * this is required to upgrade the database from version 1.
+	 */
 	private static void alterCityTable(SQLiteDatabase database) {
 		String RENAME_ORIGINAL_TABLE = "ALTER TABLE " + TABLE_CITIES
 				+ " RENAME TO " + TABLE_TEMP;
@@ -107,15 +128,16 @@ public class CityTable implements BaseColumns {
 				+ COLUMN_LAST_QUERY_TIME_FOR_CURRENT_WEATHER_VERSION_1 + ", "
 				+ COLUMN_CACHED_JSON_CURRENT_VERSION_1 + " FROM " + TABLE_TEMP
 				+ ";";
-		
+
 		database.execSQL(RENAME_ORIGINAL_TABLE);
 		database.execSQL(TABLE_CREATE);
 		database.execSQL(COPY_OLD_TABLE_TO_NEW_TABLE);
 		database.execSQL("DROP TABLE " + TABLE_TEMP);
-		
+
 		insertInitialWeatherForecastValues(database);
 	}
 
+	/** Inserts new columns into the "Cities" table. */
 	private static void insertInitialWeatherForecastValues(
 			SQLiteDatabase database) {
 		ContentValues initialForecastValues = new ContentValues();

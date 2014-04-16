@@ -1,7 +1,6 @@
 package com.haringeymobile.ukweather.data.objects;
 
-import com.haringeymobile.ukweather.data.objects.Temperature.TemperatureScale;
-
+/** Common weather details, displayed on the screen. */
 public interface WeatherInformation {
 
 	public abstract String getDescription();
