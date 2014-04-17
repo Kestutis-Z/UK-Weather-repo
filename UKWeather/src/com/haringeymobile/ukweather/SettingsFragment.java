@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
 /**
- * An fragment to provide settings for the app for Android versions starting
+ * A fragment to provide settings for the app for Android versions starting
  * with Honeycomb (version 11).
  */
 @SuppressLint("NewApi")
