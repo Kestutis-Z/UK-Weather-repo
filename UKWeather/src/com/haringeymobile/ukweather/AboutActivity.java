@@ -22,6 +22,7 @@ public class AboutActivity extends ActionBarActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		setTheme(R.style.Theme_AppCompat);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_about);
 

@@ -8,7 +8,7 @@ public enum TemperatureScale {
 	CELSIUS(10, R.string.weather_info_degree_celcius) {
 
 		@Override
-		double convertTemperature(double kelvins) {
+		public double convertTemperature(double kelvins) {
 			return kelvins - Temperature.DIFFERENCE_BETWEEN_KELVIN_AND_CELCIUS;
 		}
 
@@ -17,7 +17,7 @@ public enum TemperatureScale {
 	FAHRENHEIT(20, R.string.weather_info_degree_fahrenheit) {
 
 		@Override
-		double convertTemperature(double kelvins) {
+		public double convertTemperature(double kelvins) {
 			double celsius = CELSIUS.convertTemperature(kelvins);
 			return celsius * 9 / 5 + 32;
 		}
@@ -49,7 +49,7 @@ public enum TemperatureScale {
 	 *            temperature measured in Kelvins
 	 * @return converted teperature
 	 */
-	abstract double convertTemperature(double kelvins);
+	public abstract double convertTemperature(double kelvins);
 
 	public static TemperatureScale getTemperatureScaleById(int id) {
 		switch (id) {

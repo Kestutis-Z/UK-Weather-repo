@@ -9,7 +9,7 @@ public enum WindSpeedMeasurementUnit {
 			R.string.weather_info_wind_speed_unit_meters_per_second) {
 
 		@Override
-		double convertSpeed(double speedInMetersPerSecond) {
+		public double convertSpeed(double speedInMetersPerSecond) {
 			return speedInMetersPerSecond;
 		}
 
@@ -19,7 +19,7 @@ public enum WindSpeedMeasurementUnit {
 			R.string.weather_info_wind_speed_unit_kilometers_per_hour) {
 
 		@Override
-		double convertSpeed(double speedInMetersPerSecond) {
+		public double convertSpeed(double speedInMetersPerSecond) {
 			return speedInMetersPerSecond * 3600 / 1000;
 		}
 
@@ -28,7 +28,7 @@ public enum WindSpeedMeasurementUnit {
 	MILES_PER_HOUR(30, R.string.weather_info_wind_speed_unit_miles_per_hour) {
 
 		@Override
-		double convertSpeed(double speedInMetersPerSecond) {
+		public double convertSpeed(double speedInMetersPerSecond) {
 			return speedInMetersPerSecond * 3600 / 1609.344;
 		}
 
@@ -58,7 +58,7 @@ public enum WindSpeedMeasurementUnit {
 	 * @param speedInMetersPerSecond
 	 * @return converted wind speed
 	 */
-	abstract double convertSpeed(double speedInMetersPerSecond);
+	public abstract double convertSpeed(double speedInMetersPerSecond);
 
 	public static WindSpeedMeasurementUnit getWindSpeedMeasurementUnitById(
 			int id) {

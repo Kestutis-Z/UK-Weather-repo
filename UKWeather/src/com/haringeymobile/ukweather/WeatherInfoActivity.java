@@ -14,11 +14,13 @@ public class WeatherInfoActivity extends ActionBarActivity {
 	 * has a second pane to contain a WeatherInfoFragment, so this activity is
 	 * not necessary and should finish.
 	 */
-	private static final String DUAL_PANE = "dual_pane";
+	public static final String DUAL_PANE = "dual_pane";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		setTheme(R.style.Theme_AppCompat);
 		super.onCreate(savedInstanceState);
+
 		boolean isDualPane = DUAL_PANE.equals(getResources().getString(
 				R.string.weather_info_frame_layout_pane_number_tag));
 		if (isDualPane) {
@@ -50,8 +52,17 @@ public class WeatherInfoActivity extends ActionBarActivity {
 	 */
 	private void setActionBar(WeatherInfoType weatherInfoType) {
 		ActionBar actionBar = getSupportActionBar();
-		actionBar.setTitle(weatherInfoType.getLabelResourceId());
-		actionBar.setIcon(weatherInfoType.getIconResourceId());
+		try {
+			actionBar.setTitle(weatherInfoType.getLabelResourceId());
+			actionBar.setIcon(weatherInfoType.getIconResourceId());
+		} catch (NullPointerException e) {
+			// TODO Perhaps there is a better way to deal with this
+			// Seems to cause problems only when testing - a
+			// NullPointerException is thrown at line 139 at
+			// http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.3_r2.1/android/support/v7/app/ActionBarImplICS.java
+			// Similar problem: line 136 at
+			// https://github.com/appcelerator/titanium_mobile/blob/master/android/modules/ui/src/java/ti/modules/titanium/ui/widget/tabgroup/TiUIActionBarTabGroup.java
+		}
 	}
 
 	/**

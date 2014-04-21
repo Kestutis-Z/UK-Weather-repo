@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Temperature {
 
-	static final double DIFFERENCE_BETWEEN_KELVIN_AND_CELCIUS = 273.15;
+	public static final double DIFFERENCE_BETWEEN_KELVIN_AND_CELCIUS = 273.15;
 
 	@SerializedName("day")
 	private double dayTemperature;

@@ -50,4 +50,9 @@ public enum InitialCity {
 		return displayName;
 	}
 
+	/** @return the total number of the initial cities */
+	public static int getInitialCityCount() {
+		return InitialCity.values().length;
+	}
+
 }

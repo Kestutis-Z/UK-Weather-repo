@@ -32,7 +32,7 @@ import com.haringeymobile.ukweather.utils.SharedPrefsHelper;
 
 /**
  * An activity containing a {@link CityListFragmentWithWeatherButtons}. On
- * screens with larger width it also has a second pane to embed a
+ * screens with larger width it also has tre second pane to embed a
  * {@link WeatherInfoFragment}.
  */
 public class MainActivity extends ActionBarActivity implements
@@ -45,9 +45,8 @@ public class MainActivity extends ActionBarActivity implements
 	public static final String CITY_NAME = "city name";
 	public static final String WEATHER_INFORMATION_TYPE = "weather info type";
 	public static final String WEATHER_INFO_JSON_STRING = "json string";
-
-	private static final String LIST_FRAGMENT_TAG = "list fragment";
-	private static final String WORKER_FRAGMENT_TAG = "worker fragment";
+	public static final String LIST_FRAGMENT_TAG = "list fragment";
+	public static final String WORKER_FRAGMENT_TAG = "worker fragment";
 	private static final String QUERY_STRING_TOO_SHORT_ALERT_DIALOG_FRAGMENT_TAG = "short query fragment";
 	/** The shortest acceptable city search query string length. */
 	private static final int MINIMUM_SEARCH_QUERY_STRING_LENGTH = 3;
@@ -58,8 +57,10 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		setTheme(R.style.Theme_AppCompat);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
 		isDualPane = (FrameLayout) findViewById(R.id.weather_info_container) != null;
 
 		FragmentManager fragmentManager = getSupportFragmentManager();

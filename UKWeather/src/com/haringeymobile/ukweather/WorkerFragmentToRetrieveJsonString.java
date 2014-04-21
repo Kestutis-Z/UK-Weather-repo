@@ -107,6 +107,14 @@ public class WorkerFragmentToRetrieveJsonString extends Fragment {
 	}
 
 	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (retrieveWeatherInformationJsonStringTask != null) {
+			retrieveWeatherInformationJsonStringTask.cancel(true);
+		}
+	}
+
+	@Override
 	public void onDetach() {
 		super.onDetach();
 		parentActivity = null;
@@ -139,7 +147,7 @@ public class WorkerFragmentToRetrieveJsonString extends Fragment {
 					weatherInfoType);
 			String jsonString = sqlOperation
 					.getJsonStringForWeatherInfo(cityId);
-			if (jsonString == null) {
+			if (jsonString == null && !isCancelled()) {
 				jsonString = getJSONStringFromWebService(params[0]);
 				saveDataLocally = jsonString != null;
 			}

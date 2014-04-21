@@ -37,7 +37,7 @@ public abstract class WeatherInfoFragment extends Fragment {
 	protected static final String SEPARATOR = ": ";
 	protected static final String PERCENT_SIGN = "%";
 	protected static final String HECTOPASCAL = "hPa";
-	protected static final String JSON_STRING = "json string";
+	public static final String JSON_STRING = "json string";
 	protected static final String CITY_NAME = "city name";
 
 	protected TextView extraInfoTextView;

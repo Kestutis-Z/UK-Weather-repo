@@ -21,7 +21,7 @@ public class WeatherContentProvider extends ContentProvider {
 	private static final int CITIES_ALL_ROWS = 1;
 	private static final int CITIES_SINGLE_ROW = 2;
 
-	private static final String AUTHORITY = "com.haringeymobile.ukweather.provider";
+	public static final String AUTHORITY = "com.haringeymobile.ukweather.provider";
 
 	private static final String PATH_CITY_RECORDS = CityTable.TABLE_CITIES;
 
@@ -169,6 +169,19 @@ public class WeatherContentProvider extends ContentProvider {
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
 		return rowsUpdated;
+	}
+
+	/**
+	 * A test package can call this to get a handle to the database underlying
+	 * WeatherContentProvider, so it can insert test data into the database. The
+	 * test case class is responsible for instantiating the provider in a test
+	 * context; {@link android.test.ProviderTestCase2} does this during the call
+	 * to setUp()
+	 * 
+	 * @return a handle to the database helper object for the provider's data.
+	 */
+	public DatabaseHelper getOpenHelperForTest() {
+		return databaseHelper;
 	}
 
 }
