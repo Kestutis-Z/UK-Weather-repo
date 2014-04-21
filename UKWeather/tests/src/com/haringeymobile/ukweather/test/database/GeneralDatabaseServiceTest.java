@@ -52,9 +52,8 @@ public class GeneralDatabaseServiceTest extends
 		boolean wereIntentsHandledInTime = countDownLatch.await(
 				SECONDS_TO_HANDLE_ALL_TESTED_INTENTS, TimeUnit.SECONDS);
 
-		if (!wereIntentsHandledInTime) {
-			fail("Failed to handle all " + HANDLED_INTENT_COUNT + " intents");
-		}
+		assertTrue("Failed to handle all " + HANDLED_INTENT_COUNT
+				+ " intents in a reasonable time", wereIntentsHandledInTime);
 	}
 
 	private Intent getInsertNewCityIntent() {
