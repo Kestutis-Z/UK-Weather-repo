@@ -266,12 +266,12 @@ public class WeatherContentProviderTest extends
 
 		insertInitialTestData();
 
-		int rowsDeletedAfterDataInsertion = mockContentResolver.update(
+		int rowsUpdatedAfterDataInsertion = mockContentResolver.update(
 				WeatherContentProvider.CONTENT_URI_CITY_RECORDS, newTestValues,
 				SELECTION_COLUMNS, SELECTION_ARGS);
 
 		assertEquals("Exactly one row should have been updated)", 1,
-				rowsDeletedAfterDataInsertion);
+				rowsUpdatedAfterDataInsertion);
 	}
 
 }
