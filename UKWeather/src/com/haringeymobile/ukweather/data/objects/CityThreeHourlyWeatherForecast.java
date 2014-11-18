@@ -42,7 +42,12 @@ public class CityThreeHourlyWeatherForecast implements WeatherInformation {
 
 	@Override
 	public double getDayTemperature(TemperatureScale temperatureScale) {
-		return numericParameters.getTemperature(temperatureScale);
+		if (numericParameters == null) {
+			// NullPointerException in v. 1.0.1
+			return -1000.0;
+		} else {
+			return numericParameters.getTemperature(temperatureScale);
+		}
 	}
 
 	@Override

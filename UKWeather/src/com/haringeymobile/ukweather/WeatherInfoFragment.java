@@ -329,7 +329,8 @@ public abstract class WeatherInfoFragment extends Fragment {
 		 * @return an input stream for the weather icon
 		 */
 		private InputStream getInputStream(String iconCode) {
-			String iconUrl = Weather.ICON_URL_PREFIX + iconCode;
+			String iconUrl = Weather.ICON_URL_PREFIX + iconCode
+					+ Weather.ICON_URL_SUFFIX;
 			InputStream input;
 			try {
 				URL url = new URL(iconUrl);
